@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Fitness Up - תוכנית חיטוב אישית</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash" class="splash">
+        <div class="splash-content">
+            <div class="splash-icon">🔥</div>
+            <h1>FITNESS UP</h1>
+            <p>תוכנית חיטוב אישית</p>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-right">
+                <h1 id="page-title">דשבורד</h1>
+            </div>
+            <div class="header-left">
+                <div class="header-icon" id="btn-settings" onclick="showSettings()">⚙️</div>
+            </div>
+        </header>
+
+        <!-- Pages Container -->
+        <main class="pages-container">
+
+            <!-- ==================== PAGE: DASHBOARD ==================== -->
+            <section id="page-home" class="page active">
+                <div class="page-scroll">
+
+                    <!-- Greeting -->
+                    <div class="greeting-card">
+                        <div class="greeting-text">
+                            <span class="greeting-hello" id="greeting-time">בוקר טוב</span>
+                            <span class="greeting-name">💪 בוא נעשה את זה!</span>
+                        </div>
+                        <div class="greeting-avatar">🏋️</div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon">⚖️</div>
+                            <div class="stat-value" id="current-weight">85.0</div>
+                            <div class="stat-label">משקל נוכחי</div>
+                        </div>
+                        <div class="stat-card accent">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="target-weight">77-79</div>
+                            <div class="stat-label">משקל יעד</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-value" id="current-week">1</div>
+                            <div class="stat-label">שבוע</div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Plan -->
+                    <div class="section-title">התוכנית להיום</div>
+                    <div class="today-card" id="today-workout-card">
+                        <div class="today-card-header">
+                            <span class="today-day" id="today-day-name">יום א'</span>
+                            <span class="today-badge" id="today-badge">כוח</span>
+                        </div>
+                        <div class="today-card-body">
+                            <h3 id="today-workout-name">חזה + ביי + בטן</h3>
+                            <p id="today-workout-duration">~65 דקות</p>
+                        </div>
+                        <button class="btn-primary" id="btn-start-today" onclick="goToTodayWorkout()">התחל אימון →</button>
+                    </div>
+
+                    <!-- Daily Nutrition Summary -->
+                    <div class="section-title">תזונה היום</div>
+                    <div class="nutrition-summary-card">
+                        <div class="macro-ring-container">
+                            <div class="macro-ring">
+                                <canvas id="calorie-ring" width="120" height="120"></canvas>
+                                <div class="ring-center">
+                                    <span class="ring-value" id="cal-consumed">0</span>
+                                    <span class="ring-label">/ 2,400</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="macro-bars">
+                            <div class="macro-bar-item">
+                                <div class="macro-bar-header">
+                                    <span>חלבון</span>
+                                    <span id="protein-value">0 / 187g</span>
+                                </div>
+                                <div class="macro-bar-track">
+                                    <div class="macro-bar-fill protein" id="protein-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="macro-bar-item">
+                                <div class="macro-bar-header">
+                                    <span>פחמימות</span>
+                                    <span id="carbs-value">0 / 250g</span>
+                                </div>
+                                <div class="macro-bar-track">
+                                    <div class="macro-bar-fill carbs" id="carbs-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="macro-bar-item">
+                                <div class="macro-bar-header">
+                                    <span>שומן</span>
+                                    <span id="fat-value">0 / 72g</span>
+                                </div>
+                                <div class="macro-bar-track">
+                                    <div class="macro-bar-fill fat" id="fat-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Checklist -->
+                    <div class="section-title">צ'ק ליסט יומי</div>
+                    <div class="checklist-card">
+                        <label class="check-item" data-key="water">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'water')">
+                            <span class="check-box"></span>
+                            <span>שתיתי 2.5+ ליטר מים 💧</span>
+                        </label>
+                        <label class="check-item" data-key="meals">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'meals')">
+                            <span class="check-box"></span>
+                            <span>אכלתי 4-5 ארוחות 🍽️</span>
+                        </label>
+                        <label class="check-item" data-key="protein">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'protein')">
+                            <span class="check-box"></span>
+                            <span>הגעתי ליעד חלבון 🥩</span>
+                        </label>
+                        <label class="check-item" data-key="deficit">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'deficit')">
+                            <span class="check-box"></span>
+                            <span>נשארתי בגירעון קלורי 📉</span>
+                        </label>
+                        <label class="check-item" data-key="supplements">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'supplements')">
+                            <span class="check-box"></span>
+                            <span>לקחתי תוספים (קריאטין, ויטמין D) 💊</span>
+                        </label>
+                        <label class="check-item" data-key="sleep">
+                            <input type="checkbox" onchange="saveDailyCheck(this, 'sleep')">
+                            <span class="check-box"></span>
+                            <span>ישנתי 7+ שעות 😴</span>
+                        </label>
+                    </div>
+
+                    <!-- Weekly Overview -->
+                    <div class="section-title">השבוע שלי</div>
+                    <div class="week-overview">
+                        <div class="week-day" data-day="0" id="week-day-0">
+                            <span class="week-day-label">א'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">חזה</span>
+                        </div>
+                        <div class="week-day rest" data-day="1" id="week-day-1">
+                            <span class="week-day-label">ב'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">מנוחה</span>
+                        </div>
+                        <div class="week-day" data-day="2" id="week-day-2">
+                            <span class="week-day-label">ג'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">גב</span>
+                        </div>
+                        <div class="week-day rest" data-day="3" id="week-day-3">
+                            <span class="week-day-label">ד'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">מנוחה</span>
+                        </div>
+                        <div class="week-day" data-day="4" id="week-day-4">
+                            <span class="week-day-label">ה'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">רגליים</span>
+                        </div>
+                        <div class="week-day rest" data-day="5" id="week-day-5">
+                            <span class="week-day-label">ו'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">מנוחה</span>
+                        </div>
+                        <div class="week-day" data-day="6" id="week-day-6">
+                            <span class="week-day-label">ש'</span>
+                            <div class="week-day-dot"></div>
+                            <span class="week-day-type">קרדיו</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== PAGE: WORKOUTS ==================== -->
+            <section id="page-workouts" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">תוכנית אימונים</div>
+                    <p class="section-subtitle">שיטת A/B - שריר גדול + שריר קטן | בטן כל אימון</p>
+
+                    <!-- Workout Cards -->
+                    <div class="workout-card" onclick="openWorkout('push')">
+                        <div class="workout-card-icon">🏋️</div>
+                        <div class="workout-card-info">
+                            <h3>יום א' - דחיפה (Push)</h3>
+                            <p>חזה + ביי + בטן</p>
+                            <div class="workout-meta">
+                                <span>⏱️ ~65 דק'</span>
+                                <span>💪 22 סטים + בטן</span>
+                            </div>
+                        </div>
+                        <div class="workout-card-arrow">←</div>
+                    </div>
+
+                    <div class="workout-card" onclick="openWorkout('pull')">
+                        <div class="workout-card-icon">🔄</div>
+                        <div class="workout-card-info">
+                            <h3>יום ג' - משיכה (Pull)</h3>
+                            <p>גב + טרייספס + בטן</p>
+                            <div class="workout-meta">
+                                <span>⏱️ ~65 דק'</span>
+                                <span>💪 23 סטים + בטן</span>
+                            </div>
+                        </div>
+                        <div class="workout-card-arrow">←</div>
+                    </div>
+
+                    <div class="workout-card" onclick="openWorkout('legs')">
+                        <div class="workout-card-icon">🦵</div>
+                        <div class="workout-card-info">
+                            <h3>יום ה' - רגליים (Legs)</h3>
+                            <p>רגליים + כתפיים + בטן</p>
+                            <div class="workout-meta">
+                                <span>⏱️ ~70 דק'</span>
+                                <span>💪 27 סטים + בטן</span>
+                            </div>
+                        </div>
+                        <div class="workout-card-arrow">←</div>
+                    </div>
+
+                    <div class="workout-card cardio" onclick="openWorkout('cardio')">
+                        <div class="workout-card-icon">🏃</div>
+                        <div class="workout-card-info">
+                            <h3>שישי/שבת - קרדיו</h3>
+                            <p>HIIT / הליכה בשיפוע / ריצה</p>
+                            <div class="workout-meta">
+                                <span>⏱️ ~40-50 דק'</span>
+                                <span>❤️ שריפת שומן</span>
+                            </div>
+                        </div>
+                        <div class="workout-card-arrow">←</div>
+                    </div>
+
+                    <!-- Rest Timer -->
+                    <div class="section-title">טיימר מנוחה</div>
+                    <div class="timer-card">
+                        <div class="timer-display" id="timer-display">01:30</div>
+                        <div class="timer-presets">
+                            <button class="timer-preset" onclick="setTimer(45)">45s</button>
+                            <button class="timer-preset" onclick="setTimer(60)">60s</button>
+                            <button class="timer-preset active" onclick="setTimer(90)">90s</button>
+                            <button class="timer-preset" onclick="setTimer(120)">120s</button>
+                        </div>
+                        <div class="timer-controls">
+                            <button class="btn-timer start" id="btn-timer-start" onclick="toggleTimer()">▶ התחל</button>
+                            <button class="btn-timer reset" onclick="resetTimer()">↺ איפוס</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== PAGE: WORKOUT DETAIL ==================== -->
+            <section id="page-workout-detail" class="page">
+                <div class="page-scroll">
+                    <button class="btn-back" onclick="closeWorkoutDetail()">→ חזרה לאימונים</button>
+                    <div id="workout-detail-content"></div>
+                </div>
+            </section>
+
+            <!-- ==================== PAGE: NUTRITION ==================== -->
+            <section id="page-nutrition" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">תוכנית תזונה</div>
+                    <p class="section-subtitle">כשר | מותאם ל-85 ק"ג | גירעון 500 קק"ל</p>
+
+                    <!-- Macro Summary -->
+                    <div class="macro-summary-card">
+                        <div class="macro-pill">
+                            <span class="macro-dot protein-dot"></span>
+                            <span>חלבון 187g</span>
+                        </div>
+                        <div class="macro-pill">
+                            <span class="macro-dot carbs-dot"></span>
+                            <span>פחמימות 250g</span>
+                        </div>
+                        <div class="macro-pill">
+                            <span class="macro-dot fat-dot"></span>
+                            <span>שומן 72g</span>
+                        </div>
+                    </div>
+
+                    <!-- Day Type Toggle -->
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" id="toggle-training" onclick="toggleMealDay('training')">יום אימון (2,400)</button>
+                        <button class="toggle-btn" id="toggle-rest" onclick="toggleMealDay('rest')">יום מנוחה (2,200)</button>
+                    </div>
+
+                    <!-- Meals -->
+                    <div id="meals-container">
+                        <!-- Meal 1 -->
+                        <div class="meal-card">
+                            <div class="meal-header" onclick="toggleMeal(this)">
+                                <div class="meal-time">07:00</div>
+                                <div class="meal-info">
+                                    <h3>ארוחה 1 - בוקר</h3>
+                                    <span class="meal-cals">480 קק"ל | 41g חלבון</span>
+                                </div>
+                                <div class="meal-toggle">▼</div>
+                            </div>
+                            <div class="meal-body">
+                                <div class="meal-item">
+                                    <span>ביצים שלמות</span>
+                                    <span class="meal-amount">3 יח' | 210 קק"ל | 18g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>חלבוני ביצה</span>
+                                    <span class="meal-amount">4 יח' | 68 קק"ל | 14g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>לחם מלא</span>
+                                    <span class="meal-amount">2 פרוסות | 160 קק"ל | 8g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>אבוקדו</span>
+                                    <span class="meal-amount">1/4 | 60 קק"ל | 1g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Meal 2 -->
+                        <div class="meal-card">
+                            <div class="meal-header" onclick="toggleMeal(this)">
+                                <div class="meal-time">10:30</div>
+                                <div class="meal-info">
+                                    <h3>ארוחה 2 - ביניים</h3>
+                                    <span class="meal-cals">305 קק"ל | 28g חלבון</span>
+                                </div>
+                                <div class="meal-toggle">▼</div>
+                            </div>
+                            <div class="meal-body">
+                                <div class="meal-item">
+                                    <span>גבינת קוטג' 5%</span>
+                                    <span class="meal-amount">250g | 225 קק"ל | 28g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>תפוח / אגס</span>
+                                    <span class="meal-amount">1 | 80 קק"ל | 0g</span>
+                                </div>
+                                <div class="meal-note">⚠️ ארוחה חלבית - המתן 30 דק' לפני ארוחה בשרית</div>
+                            </div>
+                        </div>
+
+                        <!-- Meal 3 -->
+                        <div class="meal-card">
+                            <div class="meal-header" onclick="toggleMeal(this)">
+                                <div class="meal-time">13:30</div>
+                                <div class="meal-info">
+                                    <h3>ארוחה 3 - צהריים</h3>
+                                    <span class="meal-cals">580 קק"ל | 75g חלבון</span>
+                                </div>
+                                <div class="meal-toggle">▼</div>
+                            </div>
+                            <div class="meal-body" id="meal3-body">
+                                <div class="meal-item">
+                                    <span>חזה עוף צלוי</span>
+                                    <span class="meal-amount">220g | 363 קק"ל | 68g</span>
+                                </div>
+                                <div class="meal-item" id="meal3-rice">
+                                    <span>אורז מלא (מבושל)</span>
+                                    <span class="meal-amount">160g | 185 קק"ל | 4g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>ירקות מאודים / סלט</span>
+                                    <span class="meal-amount">כוס גדולה | 50 קק"ל | 3g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>שמן זית</span>
+                                    <span class="meal-amount">כפית | 45 קק"ל | 0g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Meal 4 -->
+                        <div class="meal-card">
+                            <div class="meal-header" onclick="toggleMeal(this)">
+                                <div class="meal-time">16:30</div>
+                                <div class="meal-info">
+                                    <h3>ארוחה 4 - לפני/אחרי אימון</h3>
+                                    <span class="meal-cals">355 קק"ל | 30g חלבון</span>
+                                </div>
+                                <div class="meal-toggle">▼</div>
+                            </div>
+                            <div class="meal-body" id="meal4-body">
+                                <div class="meal-item">
+                                    <span>אבקת חלבון (Whey כשר)</span>
+                                    <span class="meal-amount">סקופ | 120 קק"ל | 25g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>בננה</span>
+                                    <span class="meal-amount">1 גדולה | 120 קק"ל | 1g</span>
+                                </div>
+                                <div class="meal-item" id="meal4-oats">
+                                    <span>שיבולת שועל</span>
+                                    <span class="meal-amount">30g | 115 קק"ל | 4g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Meal 5 -->
+                        <div class="meal-card">
+                            <div class="meal-header" onclick="toggleMeal(this)">
+                                <div class="meal-time">20:30</div>
+                                <div class="meal-info">
+                                    <h3>ארוחה 5 - ערב</h3>
+                                    <span class="meal-cals">565 קק"ל | 50g חלבון</span>
+                                </div>
+                                <div class="meal-toggle">▼</div>
+                            </div>
+                            <div class="meal-body" id="meal5-body">
+                                <div class="meal-item">
+                                    <span>דג טילאפיה / סלמון</span>
+                                    <span class="meal-amount">200g | 280 קק"ל | 42g</span>
+                                </div>
+                                <div class="meal-item" id="meal5-potato">
+                                    <span>בטטה אפויה</span>
+                                    <span class="meal-amount">150g | 135 קק"ל | 2g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>סלט ירקות גדול</span>
+                                    <span class="meal-amount">2 כוסות | 60 קק"ל | 3g</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>טחינה גולמית</span>
+                                    <span class="meal-amount">כף | 90 קק"ל | 3g</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supplements -->
+                    <div class="section-title">תוספי תזונה</div>
+                    <div class="supplements-grid">
+                        <div class="supplement-card essential">
+                            <div class="supp-icon">🥛</div>
+                            <div class="supp-name">Whey חלבון</div>
+                            <div class="supp-dose">25-50g</div>
+                            <div class="supp-when">אחרי אימון</div>
+                        </div>
+                        <div class="supplement-card essential">
+                            <div class="supp-icon">💎</div>
+                            <div class="supp-name">קריאטין</div>
+                            <div class="supp-dose">5g</div>
+                            <div class="supp-when">כל יום</div>
+                        </div>
+                        <div class="supplement-card essential">
+                            <div class="supp-icon">☀️</div>
+                            <div class="supp-name">ויטמין D3</div>
+                            <div class="supp-dose">1,000-2,000 IU</div>
+                            <div class="supp-when">עם ארוחה</div>
+                        </div>
+                        <div class="supplement-card essential">
+                            <div class="supp-icon">🐟</div>
+                            <div class="supp-name">אומגה 3</div>
+                            <div class="supp-dose">1-2g EPA+DHA</div>
+                            <div class="supp-when">עם ארוחה</div>
+                        </div>
+                        <div class="supplement-card optional">
+                            <div class="supp-icon">🌙</div>
+                            <div class="supp-name">מגנזיום</div>
+                            <div class="supp-dose">200-400mg</div>
+                            <div class="supp-when">לפני שינה</div>
+                        </div>
+                        <div class="supplement-card optional">
+                            <div class="supp-icon">☕</div>
+                            <div class="supp-name">קפאין</div>
+                            <div class="supp-dose">100-200mg</div>
+                            <div class="supp-when">לפני אימון</div>
+                        </div>
+                    </div>
+
+                    <!-- Protein Sources -->
+                    <div class="section-title">חלופות חלבון כשרות</div>
+                    <div class="protein-tabs">
+                        <button class="protein-tab active" onclick="showProteinTab('meat')">בשרי 🥩</button>
+                        <button class="protein-tab" onclick="showProteinTab('fish')">דגים 🐟</button>
+                        <button class="protein-tab" onclick="showProteinTab('dairy')">חלבי 🧀</button>
+                        <button class="protein-tab" onclick="showProteinTab('parve')">פרווה 🥚</button>
+                    </div>
+                    <div class="protein-list" id="protein-list">
+                        <!-- Filled by JS -->
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== PAGE: PROGRESS ==================== -->
+            <section id="page-progress" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">מעקב התקדמות</div>
+                    <p class="section-subtitle">85 ק"ג → 77-79 ק"ג | 10-12 שבועות</p>
+
+                    <!-- Weight Input -->
+                    <div class="weight-input-card">
+                        <h3>עדכון משקל</h3>
+                        <div class="weight-input-row">
+                            <input type="number" id="weight-input" placeholder="85.0" step="0.1" min="50" max="150">
+                            <span class="weight-unit">ק"ג</span>
+                            <button class="btn-primary small" onclick="saveWeight()">שמור</button>
+                        </div>
+                    </div>
+
+                    <!-- Weight Chart -->
+                    <div class="chart-card">
+                        <h3>גרף משקל</h3>
+                        <canvas id="weight-chart" width="350" height="200"></canvas>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-dot actual"></span> בפועל</span>
+                            <span class="legend-item"><span class="legend-dot target"></span> יעד</span>
+                        </div>
+                    </div>
+
+                    <!-- Weight Log -->
+                    <div class="section-title">היסטוריית משקל</div>
+                    <div class="weight-log" id="weight-log">
+                        <!-- Filled by JS -->
+                    </div>
+
+                    <!-- Body Measurements -->
+                    <div class="section-title">מדידות גוף</div>
+                    <div class="measurements-card">
+                        <div class="measurement-row">
+                            <label>היקף מותן</label>
+                            <input type="number" step="0.5" class="measure-input" data-measure="waist" placeholder="--">
+                            <span>ס"מ</span>
+                        </div>
+                        <div class="measurement-row">
+                            <label>היקף חזה</label>
+                            <input type="number" step="0.5" class="measure-input" data-measure="chest" placeholder="--">
+                            <span>ס"מ</span>
+                        </div>
+                        <div class="measurement-row">
+                            <label>היקף זרוע</label>
+                            <input type="number" step="0.5" class="measure-input" data-measure="arm" placeholder="--">
+                            <span>ס"מ</span>
+                        </div>
+                        <div class="measurement-row">
+                            <label>היקף ירך</label>
+                            <input type="number" step="0.5" class="measure-input" data-measure="thigh" placeholder="--">
+                            <span>ס"מ</span>
+                        </div>
+                        <button class="btn-primary" onclick="saveMeasurements()">שמור מדידות</button>
+                    </div>
+
+                    <!-- Strength Tracking -->
+                    <div class="section-title">מעקב כוח</div>
+                    <div class="strength-card">
+                        <div class="strength-exercise">
+                            <div class="strength-header">
+                                <span>Bench Press</span>
+                                <span class="strength-best" id="bench-best">--</span>
+                            </div>
+                            <div class="strength-input-row">
+                                <input type="number" placeholder="kg" class="str-input" id="bench-kg">
+                                <span>×</span>
+                                <input type="number" placeholder="reps" class="str-input" id="bench-reps">
+                                <button class="btn-small" onclick="saveStrength('bench')">+</button>
+                            </div>
+                        </div>
+                        <div class="strength-exercise">
+                            <div class="strength-header">
+                                <span>Squat</span>
+                                <span class="strength-best" id="squat-best">--</span>
+                            </div>
+                            <div class="strength-input-row">
+                                <input type="number" placeholder="kg" class="str-input" id="squat-kg">
+                                <span>×</span>
+                                <input type="number" placeholder="reps" class="str-input" id="squat-reps">
+                                <button class="btn-small" onclick="saveStrength('squat')">+</button>
+                            </div>
+                        </div>
+                        <div class="strength-exercise">
+                            <div class="strength-header">
+                                <span>Barbell Row</span>
+                                <span class="strength-best" id="row-best">--</span>
+                            </div>
+                            <div class="strength-input-row">
+                                <input type="number" placeholder="kg" class="str-input" id="row-kg">
+                                <span>×</span>
+                                <input type="number" placeholder="reps" class="str-input" id="row-reps">
+                                <button class="btn-small" onclick="saveStrength('row')">+</button>
+                            </div>
+                        </div>
+                        <div class="strength-exercise">
+                            <div class="strength-header">
+                                <span>Romanian Deadlift</span>
+                                <span class="strength-best" id="rdl-best">--</span>
+                            </div>
+                            <div class="strength-input-row">
+                                <input type="number" placeholder="kg" class="str-input" id="rdl-kg">
+                                <span>×</span>
+                                <input type="number" placeholder="reps" class="str-input" id="rdl-reps">
+                                <button class="btn-small" onclick="saveStrength('rdl')">+</button>
+                            </div>
+                        </div>
+                        <div class="strength-exercise">
+                            <div class="strength-header">
+                                <span>Shoulder Press</span>
+                                <span class="strength-best" id="ohp-best">--</span>
+                            </div>
+                            <div class="strength-input-row">
+                                <input type="number" placeholder="kg" class="str-input" id="ohp-kg">
+                                <span>×</span>
+                                <input type="number" placeholder="reps" class="str-input" id="ohp-reps">
+                                <button class="btn-small" onclick="saveStrength('ohp')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adjustment Guide -->
+                    <div class="section-title">מתי לשנות?</div>
+                    <div class="tips-card">
+                        <div class="tip-item good">
+                            <span class="tip-icon">✅</span>
+                            <div>
+                                <strong>0.5-0.75 ק"ג בשבוע</strong>
+                                <p>מצוין! תמשיך ככה</p>
+                            </div>
+                        </div>
+                        <div class="tip-item warning">
+                            <span class="tip-icon">⚠️</span>
+                            <div>
+                                <strong>יותר מ-1 ק"ג בשבוע</strong>
+                                <p>הוסף 100-200 קלוריות (שומר שריר)</p>
+                            </div>
+                        </div>
+                        <div class="tip-item danger">
+                            <span class="tip-icon">🛑</span>
+                            <div>
+                                <strong>לא ירדת 2 שבועות ברציפות</strong>
+                                <p>הורד 150 קלוריות או הוסף 15 דק' אירובי</p>
+                            </div>
+                        </div>
+                        <div class="tip-item info">
+                            <span class="tip-icon">💤</span>
+                            <div>
+                                <strong>עייפות קשה</strong>
+                                <p>קח שבוע Deload (משקלים קלים)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="home" onclick="switchPage('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">בית</span>
+            </button>
+            <button class="nav-item" data-page="workouts" onclick="switchPage('workouts')">
+                <span class="nav-icon">🏋️</span>
+                <span class="nav-label">אימונים</span>
+            </button>
+            <button class="nav-item" data-page="nutrition" onclick="switchPage('nutrition')">
+                <span class="nav-icon">🥗</span>
+                <span class="nav-label">תזונה</span>
+            </button>
+            <button class="nav-item" data-page="progress" onclick="switchPage('progress')">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">התקדמות</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal" onclick="closeSettings(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>הגדרות</h2>
+                <button class="modal-close" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <h3>פרטים אישיים</h3>
+                    <div class="setting-row">
+                        <label>משקל התחלה (ק"ג)</label>
+                        <input type="number" id="setting-start-weight" value="85" step="0.1">
+                    </div>
+                    <div class="setting-row">
+                        <label>גובה (מ')</label>
+                        <input type="number" id="setting-height" value="1.82" step="0.01">
+                    </div>
+                    <div class="setting-row">
+                        <label>שבוע נוכחי</label>
+                        <input type="number" id="setting-week" value="1" min="1" max="12">
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h3>יעדי תזונה</h3>
+                    <div class="setting-row">
+                        <label>קלוריות יום אימון</label>
+                        <input type="number" id="setting-cal-train" value="2400">
+                    </div>
+                    <div class="setting-row">
+                        <label>קלוריות יום מנוחה</label>
+                        <input type="number" id="setting-cal-rest" value="2200">
+                    </div>
+                    <div class="setting-row">
+                        <label>חלבון (g)</label>
+                        <input type="number" id="setting-protein" value="187">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="saveSettings()">שמור הגדרות</button>
+                <button class="btn-danger" onclick="resetAllData()">🗑️ איפוס כל הנתונים</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
