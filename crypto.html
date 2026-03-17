@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#060610">
+    <title>CryptoEdge - פלטפורמת מסחר</title>
+    <link rel="stylesheet" href="crypto-style.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash" class="splash">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="logo-icon">₿</div>
+                <h1>CryptoEdge</h1>
+                <p>פלטפורמת ניהול סיכונים מקצועית</p>
+            </div>
+            <div class="splash-loader"><div class="loader-bar"></div></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-right">
+                <h1 id="page-title">דשבורד</h1>
+            </div>
+            <div class="header-left">
+                <div class="header-badge" id="fng-header-badge">--</div>
+            </div>
+        </header>
+
+        <!-- Pages Container -->
+        <main class="pages-container">
+
+            <!-- ==================== DASHBOARD ==================== -->
+            <section id="page-dashboard" class="page active">
+                <div class="page-scroll">
+
+                    <!-- Fear & Greed Index -->
+                    <div class="fng-card" id="fng-card">
+                        <div class="fng-left">
+                            <div class="fng-title">מדד פחד ותאוות בצע</div>
+                            <div class="fng-value" id="fng-value">--</div>
+                            <div class="fng-label" id="fng-label">טוען...</div>
+                            <div class="fng-update" id="fng-update"></div>
+                        </div>
+                        <div class="fng-right">
+                            <canvas id="fng-gauge" width="140" height="140"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Quick Market Links -->
+                    <div class="section-title">מחירים בזמן אמת</div>
+                    <div class="market-links-grid">
+                        <a href="https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT" target="_blank" class="market-link-card">
+                            <div class="ml-icon">₿</div>
+                            <div class="ml-name">BTC/USDT</div>
+                            <div class="ml-sub">TradingView</div>
+                        </a>
+                        <a href="https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT" target="_blank" class="market-link-card">
+                            <div class="ml-icon">Ξ</div>
+                            <div class="ml-name">ETH/USDT</div>
+                            <div class="ml-sub">TradingView</div>
+                        </a>
+                        <a href="https://coinmarketcap.com" target="_blank" class="market-link-card">
+                            <div class="ml-icon">📊</div>
+                            <div class="ml-name">CoinMarketCap</div>
+                            <div class="ml-sub">שוק קריפטו</div>
+                        </a>
+                        <a href="https://www.coingecko.com" target="_blank" class="market-link-card">
+                            <div class="ml-icon">🦎</div>
+                            <div class="ml-name">CoinGecko</div>
+                            <div class="ml-sub">נתוני שוק</div>
+                        </a>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="section-title">סיכום מסחר</div>
+                    <div class="stats-row">
+                        <div class="stat-card" id="stat-total-trades">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-value" id="total-trades-val">0</div>
+                            <div class="stat-label">סה"כ עסקאות</div>
+                        </div>
+                        <div class="stat-card green" id="stat-win-rate">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="win-rate-val">0%</div>
+                            <div class="stat-label">אחוז הצלחה</div>
+                        </div>
+                        <div class="stat-card" id="stat-pnl">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-value" id="total-pnl-val">$0</div>
+                            <div class="stat-label">רווח/הפסד</div>
+                        </div>
+                    </div>
+
+                    <!-- Market Sentiment Section -->
+                    <div class="section-title">כלים ומשאבים חשובים</div>
+                    <div class="resources-list">
+                        <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" class="resource-item">
+                            <div class="ri-icon fear">😱</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Fear & Greed Index</div>
+                                <div class="ri-desc">מדד פחד ותאוות בצע - היסטוריה מלאה</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/bitcoin-halving-cycles/" target="_blank" class="resource-item">
+                            <div class="ri-icon halving">⚡</div>
+                            <div class="ri-info">
+                                <div class="ri-name">מחזורי האלווינג</div>
+                                <div class="ri-desc">גרף מחזורי חצייה של ביטקוין</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.blockchaincenter.net/en/rainbow-chart/" target="_blank" class="resource-item">
+                            <div class="ri-icon rainbow">🌈</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Rainbow Chart</div>
+                                <div class="ri-desc">גרף הקשת של ביטקוין</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/stock-to-flow-model/" target="_blank" class="resource-item">
+                            <div class="ri-icon stf">📐</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Stock to Flow</div>
+                                <div class="ri-desc">מודל S2F של Plan B</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== JOURNAL ==================== -->
+            <section id="page-journal" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">יומן מסחר</div>
+
+                    <!-- Add Trade Button -->
+                    <button class="btn-add-trade" onclick="openAddTrade()">+ הוסף עסקה חדשה</button>
+
+                    <!-- Filters -->
+                    <div class="journal-filters">
+                        <button class="filter-btn active" onclick="filterJournal('all', this)">הכל</button>
+                        <button class="filter-btn" onclick="filterJournal('win', this)">רווח ✅</button>
+                        <button class="filter-btn" onclick="filterJournal('loss', this)">הפסד ❌</button>
+                        <button class="filter-btn" onclick="filterJournal('open', this)">פתוח 🔄</button>
+                    </div>
+
+                    <!-- Trades List -->
+                    <div id="trades-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">📓</div>
+                            <p>עדיין אין עסקאות. הוסף את העסקה הראשונה שלך!</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== STRATEGIES ==================== -->
+            <section id="page-strategies" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">אסטרטגיות מסחר</div>
+                    <p class="section-subtitle">בחר את הפרופיל שמתאים לך</p>
+
+                    <!-- Profile Selector -->
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" onclick="showProfile('day')">
+                            <div class="pt-icon">⚡</div>
+                            <div class="pt-label">סוחר יומי</div>
+                        </button>
+                        <button class="profile-tab" onclick="showProfile('swing')">
+                            <div class="pt-icon">📈</div>
+                            <div class="pt-label">סווינג</div>
+                        </button>
+                        <button class="profile-tab" onclick="showProfile('investor')">
+                            <div class="pt-icon">💎</div>
+                            <div class="pt-label">משקיע</div>
+                        </button>
+                    </div>
+
+                    <!-- Profile Content -->
+                    <div id="profile-content"></div>
+
+                </div>
+            </section>
+
+            <!-- ==================== RISK CALCULATOR ==================== -->
+            <section id="page-risk" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">מחשבון סיכונים</div>
+                    <p class="section-subtitle">כמה להשקיע בכל עסקה?</p>
+
+                    <!-- Calculator Card -->
+                    <div class="calc-card">
+                        <div class="calc-field">
+                            <label>גודל תיק ($)</label>
+                            <input type="number" id="calc-portfolio" placeholder="10000" onInput="calculateRisk()">
+                        </div>
+                        <div class="calc-field">
+                            <label>סיכון לעסקה (%)</label>
+                            <div class="calc-presets">
+                                <button class="calc-preset" onclick="setRiskPct(1)">1%</button>
+                                <button class="calc-preset active" onclick="setRiskPct(2)">2%</button>
+                                <button class="calc-preset" onclick="setRiskPct(3)">3%</button>
+                                <button class="calc-preset" onclick="setRiskPct(5)">5%</button>
+                            </div>
+                            <input type="number" id="calc-risk-pct" value="2" step="0.5" min="0.1" max="100" onInput="calculateRisk()">
+                        </div>
+                        <div class="calc-field">
+                            <label>מחיר כניסה ($)</label>
+                            <input type="number" id="calc-entry" placeholder="45000" onInput="calculateRisk()">
+                        </div>
+                        <div class="calc-field">
+                            <label>מחיר סטופ לוס ($)</label>
+                            <input type="number" id="calc-stop" placeholder="43000" onInput="calculateRisk()">
+                        </div>
+                        <div class="calc-field">
+                            <label>מחיר יעד (Take Profit) ($)</label>
+                            <input type="number" id="calc-target" placeholder="50000" onInput="calculateRisk()">
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="calc-results" id="calc-results">
+                        <div class="result-row">
+                            <span>סכום בסיכון</span>
+                            <span class="result-val danger" id="res-risk-amount">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>גודל פוזיציה ($)</span>
+                            <span class="result-val" id="res-position">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>כמות מטבעות</span>
+                            <span class="result-val" id="res-coins">0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>יחס סיכון/תגמול</span>
+                            <span class="result-val" id="res-rr">0:1</span>
+                        </div>
+                        <div class="result-row">
+                            <span>רווח פוטנציאלי</span>
+                            <span class="result-val green" id="res-profit">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>אחוז ירידה לסטופ</span>
+                            <span class="result-val danger" id="res-stop-pct">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Risk Rules -->
+                    <div class="section-title">כללי ניהול סיכונים</div>
+                    <div class="rules-card">
+                        <div class="rule-item gold">
+                            <div class="rule-icon">👑</div>
+                            <div class="rule-text">
+                                <strong>כלל ה-2%</strong>
+                                <p>לעולם אל תסכן יותר מ-2% מהתיק בעסקה אחת</p>
+                            </div>
+                        </div>
+                        <div class="rule-item blue">
+                            <div class="rule-icon">🎯</div>
+                            <div class="rule-text">
+                                <strong>יחס R:R מינימלי 1:2</strong>
+                                <p>הרווח הפוטנציאלי חייב להיות לפחות פי 2 מהסיכון</p>
+                            </div>
+                        </div>
+                        <div class="rule-item red">
+                            <div class="rule-icon">🛑</div>
+                            <div class="rule-text">
+                                <strong>סטופ לוס תמיד!</strong>
+                                <p>כל עסקה חייבת להיות עם סטופ לוס מוגדר מראש</p>
+                            </div>
+                        </div>
+                        <div class="rule-item green">
+                            <div class="rule-icon">📊</div>
+                            <div class="rule-text">
+                                <strong>מקסימום 6% בסיכון כולל</strong>
+                                <p>סה"כ כל העסקאות הפתוחות לא יעלו על 6% מהתיק</p>
+                            </div>
+                        </div>
+                        <div class="rule-item purple">
+                            <div class="rule-icon">🧠</div>
+                            <div class="rule-text">
+                                <strong>אל תתנקם בשוק</strong>
+                                <p>אחרי הפסד - קח הפסקה, אל תכפיל הימורים</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== WHALES ==================== -->
+            <section id="page-whales" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">מעקב לווייתנים</div>
+                    <p class="section-subtitle">עקוב אחרי כסף חכם בשוק</p>
+
+                    <!-- Whale Alert -->
+                    <div class="whale-card featured">
+                        <div class="wc-header">
+                            <div class="wc-icon">🚨</div>
+                            <div class="wc-info">
+                                <div class="wc-name">Whale Alert</div>
+                                <div class="wc-desc">התראות בזמן אמת על העברות גדולות</div>
+                            </div>
+                            <a href="https://whale-alert.io" target="_blank" class="wc-btn">פתח</a>
+                        </div>
+                    </div>
+
+                    <div class="section-title">כלי ניתוח ארנקים</div>
+
+                    <div class="resources-list">
+                        <a href="https://platform.arkhamintelligence.com" target="_blank" class="resource-item">
+                            <div class="ri-icon arkham">🔍</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Arkham Intelligence</div>
+                                <div class="ri-desc">מעקב ארנקים ומוסדות - ניתוח עמוק</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://nansen.ai" target="_blank" class="resource-item">
+                            <div class="ri-icon nansen">🧠</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Nansen</div>
+                                <div class="ri-desc">Smart Money tracking - ארנקים חכמים</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://etherscan.io/accounts" target="_blank" class="resource-item">
+                            <div class="ri-icon eth">Ξ</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Etherscan Whales</div>
+                                <div class="ri-desc">הארנקים הגדולים ביותר באת'ריום</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://btcscan.org/richlist" target="_blank" class="resource-item">
+                            <div class="ri-icon btc">₿</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Bitcoin Rich List</div>
+                                <div class="ri-desc">הארנקים הגדולים ביותר בביטקוין</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://debank.com" target="_blank" class="resource-item">
+                            <div class="ri-icon debank">🏦</div>
+                            <div class="ri-info">
+                                <div class="ri-name">DeBank</div>
+                                <div class="ri-desc">מעקב תיק DeFi וארנקים</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://dune.com" target="_blank" class="resource-item">
+                            <div class="ri-icon dune">📈</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Dune Analytics</div>
+                                <div class="ri-desc">אנליטיקה On-Chain מתקדמת</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                    </div>
+
+                    <!-- On-Chain Metrics -->
+                    <div class="section-title">מדדי On-Chain חשובים</div>
+                    <div class="resources-list">
+                        <a href="https://glassnode.com" target="_blank" class="resource-item">
+                            <div class="ri-icon glass">🔬</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Glassnode</div>
+                                <div class="ri-desc">מדדי On-Chain מתקדמים - NUPL, SOPR</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://cryptoquant.com" target="_blank" class="resource-item">
+                            <div class="ri-icon cq">📡</div>
+                            <div class="ri-info">
+                                <div class="ri-name">CryptoQuant</div>
+                                <div class="ri-desc">תזרים לבורסות, מדדי כרייה</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://santiment.net" target="_blank" class="resource-item">
+                            <div class="ri-icon san">🌊</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Santiment</div>
+                                <div class="ri-desc">סנטימנט שוק, נפח גדול, כסף חכם</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==================== CHARTS ==================== -->
+            <section id="page-charts" class="page">
+                <div class="page-scroll">
+
+                    <div class="section-title">גרפים היסטוריים</div>
+                    <p class="section-subtitle">כלים לזיהוי מיקום בסייקל</p>
+
+                    <!-- Super Cycle Info Card -->
+                    <div class="info-card featured">
+                        <div class="info-card-icon">🌀</div>
+                        <div class="info-card-body">
+                            <h3>הסופר סייקל של ביטקוין</h3>
+                            <p>מחזור ה-4 שנים המבוסס על האלווינג. כל מחזור: Accumulation → Bull Run → Distribution → Bear Market → חזרה</p>
+                            <div class="cycle-phases">
+                                <div class="phase acc">צבירה</div>
+                                <div class="phase-arrow">→</div>
+                                <div class="phase bull">עלייה</div>
+                                <div class="phase-arrow">→</div>
+                                <div class="phase dist">חלוקה</div>
+                                <div class="phase-arrow">→</div>
+                                <div class="phase bear">ירידה</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Links -->
+                    <div class="section-title">גרפים חיוניים</div>
+                    <div class="resources-list">
+                        <a href="https://www.blockchaincenter.net/en/rainbow-chart/" target="_blank" class="resource-item big">
+                            <div class="ri-icon rainbow">🌈</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Bitcoin Rainbow Chart</div>
+                                <div class="ri-desc">קנה/מכור/החזק - לפי צבעי הקשת</div>
+                                <div class="ri-tag">פופולרי מאוד</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/bitcoin-halving-cycles/" target="_blank" class="resource-item big">
+                            <div class="ri-icon halving">⚡</div>
+                            <div class="ri-info">
+                                <div class="ri-name">מחזורי האלווינג</div>
+                                <div class="ri-desc">השוואת כל מחזורי האלווינג</div>
+                                <div class="ri-tag">Look Into Bitcoin</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/stock-to-flow-model/" target="_blank" class="resource-item big">
+                            <div class="ri-icon stf">📐</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Stock-to-Flow Model</div>
+                                <div class="ri-desc">מודל S2F - נדירות ביטקוין לעומת מחיר</div>
+                                <div class="ri-tag">Plan B</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/pi-cycle-top-indicator/" target="_blank" class="resource-item big">
+                            <div class="ri-icon pi">π</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Pi Cycle Top Indicator</div>
+                                <div class="ri-desc">מדד לזיהוי שיאי שוק - דיוק גבוה</div>
+                                <div class="ri-tag">מדויק מאוד</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/nupl/" target="_blank" class="resource-item big">
+                            <div class="ri-icon nupl">📊</div>
+                            <div class="ri-info">
+                                <div class="ri-name">NUPL - Net Unrealized P&L</div>
+                                <div class="ri-desc">מדד רווח/הפסד לא ממומש - סנטימנט</div>
+                                <div class="ri-tag">On-Chain</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.lookintobitcoin.com/charts/mvrv-zscore/" target="_blank" class="resource-item big">
+                            <div class="ri-icon mvrv">⚖️</div>
+                            <div class="ri-info">
+                                <div class="ri-name">MVRV Z-Score</div>
+                                <div class="ri-desc">האם ביטקוין יקר או זול היסטורית?</div>
+                                <div class="ri-tag">On-Chain</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.coinglass.com/LiquidationData" target="_blank" class="resource-item big">
+                            <div class="ri-icon liq">💥</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Liquidation Heatmap</div>
+                                <div class="ri-desc">מפת חמימות לחיסולים - מחירי מלכוד</div>
+                                <div class="ri-tag">CoinGlass</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.coinglass.com/FundingRate" target="_blank" class="resource-item big">
+                            <div class="ri-icon funding">💸</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Funding Rate</div>
+                                <div class="ri-desc">דמי מימון - מדד לסנטימנט חוזים</div>
+                                <div class="ri-tag">CoinGlass</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.tradingview.com/chart/?symbol=TOTAL" target="_blank" class="resource-item big">
+                            <div class="ri-icon dom">🏛️</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Total Market Cap</div>
+                                <div class="ri-desc">שווי שוק כולל של קריפטו</div>
+                                <div class="ri-tag">TradingView</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                        <a href="https://www.tradingview.com/chart/?symbol=BTC.D" target="_blank" class="resource-item big">
+                            <div class="ri-icon btcd">₿</div>
+                            <div class="ri-info">
+                                <div class="ri-name">Bitcoin Dominance</div>
+                                <div class="ri-desc">דומיננטיות BTC - מתי עונת הAlt?</div>
+                                <div class="ri-tag">TradingView</div>
+                            </div>
+                            <div class="ri-arrow">←</div>
+                        </a>
+                    </div>
+
+                    <!-- Cycle Position Guide -->
+                    <div class="section-title">מדריך מיקום בסייקל</div>
+                    <div class="cycle-guide">
+                        <div class="cg-item acc-phase">
+                            <div class="cg-icon">🟦</div>
+                            <div class="cg-info">
+                                <strong>שלב צבירה</strong>
+                                <p>FNG: פחד קיצוני | NUPL: כחול | MVRV נמוך | Rainbow: כחול/ירוק</p>
+                                <div class="cg-action buy">פעולה: קנה, DCA</div>
+                            </div>
+                        </div>
+                        <div class="cg-item bull-phase">
+                            <div class="cg-icon">🟩</div>
+                            <div class="cg-info">
+                                <strong>שוק עולה</strong>
+                                <p>FNG: תאוות בצע | מחזורים עולים | ALT Season מתחיל</p>
+                                <div class="cg-action hold">פעולה: החזק, Take Profit חלקי</div>
+                            </div>
+                        </div>
+                        <div class="cg-item dist-phase">
+                            <div class="cg-icon">🟧</div>
+                            <div class="cg-info">
+                                <strong>שלב חלוקה</strong>
+                                <p>FNG: תאוות בצע קיצוני | Pi Cycle מתקרב | NUPL: אופוריה</p>
+                                <div class="cg-action sell">פעולה: מכור בהדרגה, שמור USDT</div>
+                            </div>
+                        </div>
+                        <div class="cg-item bear-phase">
+                            <div class="cg-icon">🟥</div>
+                            <div class="cg-info">
+                                <strong>שוק דובי</strong>
+                                <p>FNG: פחד | ירידות 60-80% | Volume נמוך | אין עניין תקשורתי</p>
+                                <div class="cg-action wait">פעולה: צבור USDT, חכה</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">דשבורד</span>
+            </button>
+            <button class="nav-item" data-page="journal" onclick="switchPage('journal')">
+                <span class="nav-icon">📓</span>
+                <span class="nav-label">יומן</span>
+            </button>
+            <button class="nav-item" data-page="strategies" onclick="switchPage('strategies')">
+                <span class="nav-icon">🧠</span>
+                <span class="nav-label">אסטרטגיה</span>
+            </button>
+            <button class="nav-item" data-page="risk" onclick="switchPage('risk')">
+                <span class="nav-icon">⚖️</span>
+                <span class="nav-label">סיכון</span>
+            </button>
+            <button class="nav-item" data-page="whales" onclick="switchPage('whales')">
+                <span class="nav-icon">🐋</span>
+                <span class="nav-label">לווייתנים</span>
+            </button>
+            <button class="nav-item" data-page="charts" onclick="switchPage('charts')">
+                <span class="nav-icon">📈</span>
+                <span class="nav-label">גרפים</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- Add Trade Modal -->
+    <div class="modal-overlay" id="trade-modal" onclick="closeTradeModal(event)">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 id="modal-title">עסקה חדשה</h2>
+                <button class="modal-close" onclick="closeTradeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-field half">
+                        <label>זוג מסחר</label>
+                        <input type="text" id="trade-pair" placeholder="BTC/USDT" style="text-transform:uppercase;">
+                    </div>
+                    <div class="form-field half">
+                        <label>כיוון</label>
+                        <div class="direction-toggle">
+                            <button class="dir-btn active" id="dir-long" onclick="setDirection('long')">📈 לונג</button>
+                            <button class="dir-btn" id="dir-short" onclick="setDirection('short')">📉 שורט</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field half">
+                        <label>תאריך כניסה</label>
+                        <input type="date" id="trade-date">
+                    </div>
+                    <div class="form-field half">
+                        <label>אסטרטגיה</label>
+                        <select id="trade-strategy">
+                            <option value="day">סוחר יומי</option>
+                            <option value="swing">סווינג</option>
+                            <option value="investor">השקעה</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field third">
+                        <label>כניסה ($)</label>
+                        <input type="number" id="trade-entry" placeholder="45000">
+                    </div>
+                    <div class="form-field third">
+                        <label>סטופ ($)</label>
+                        <input type="number" id="trade-stop" placeholder="43000">
+                    </div>
+                    <div class="form-field third">
+                        <label>יעד ($)</label>
+                        <input type="number" id="trade-target" placeholder="50000">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field half">
+                        <label>גודל פוזיציה ($)</label>
+                        <input type="number" id="trade-size" placeholder="1000">
+                    </div>
+                    <div class="form-field half">
+                        <label>מינוף</label>
+                        <select id="trade-leverage">
+                            <option value="1">1x (Spot)</option>
+                            <option value="2">2x</option>
+                            <option value="3">3x</option>
+                            <option value="5">5x</option>
+                            <option value="10">10x</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field half">
+                        <label>מחיר יציאה ($) - אופציונלי</label>
+                        <input type="number" id="trade-exit" placeholder="השאר ריק לעסקה פתוחה">
+                    </div>
+                    <div class="form-field half">
+                        <label>סטטוס</label>
+                        <select id="trade-status">
+                            <option value="open">פתוח</option>
+                            <option value="win">סגור - רווח</option>
+                            <option value="loss">סגור - הפסד</option>
+                            <option value="breakeven">Breakeven</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>הערות</label>
+                    <textarea id="trade-notes" placeholder="סיבת הכניסה, הסטאפ, מה למדת..." rows="3"></textarea>
+                </div>
+                <input type="hidden" id="trade-edit-id" value="">
+                <button class="btn-primary" onclick="saveTrade()">שמור עסקה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="crypto-app.js"></script>
+</body>
+</html>
