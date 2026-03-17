@@ -7,7 +7,562 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#060610">
     <title>CryptoEdge - פלטפורמת מסחר</title>
-    <link rel="stylesheet" href="crypto-style.css">
+    <style>
+/* ==================== CRYPTOEDGE - STYLES ==================== */
+/* Dark professional trading UI - Hebrew RTL */
+
+:root {
+    --bg: #060610;
+    --bg-card: #0d0d1f;
+    --bg-elevated: #14142a;
+    --bg-input: #1a1a30;
+    --border: #252540;
+    --border-glow: rgba(99, 102, 241, 0.3);
+    --text: #e8e8ff;
+    --text-secondary: #7878a0;
+    --text-muted: #4a4a68;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --green: #10b981;
+    --green-light: rgba(16, 185, 129, 0.15);
+    --red: #ef4444;
+    --red-light: rgba(239, 68, 68, 0.15);
+    --yellow: #f59e0b;
+    --yellow-light: rgba(245, 158, 11, 0.15);
+    --blue: #3b82f6;
+    --blue-light: rgba(59, 130, 246, 0.15);
+    --purple: #a855f7;
+    --purple-light: rgba(168, 85, 247, 0.15);
+    --orange: #f97316;
+    --nav-height: 70px;
+    --header-height: 60px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, 'Heebo', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
+    overflow: hidden;
+}
+
+/* ==================== SPLASH ==================== */
+.splash {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #060610 0%, #0d0d2a 100%);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.5s ease;
+}
+.splash.hide { opacity: 0; pointer-events: none; }
+.splash-content { text-align: center; }
+.splash-logo { margin-bottom: 48px; }
+.logo-icon {
+    font-size: 4rem; display: block; margin-bottom: 16px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.splash-logo h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: 3px; color: var(--text); }
+.splash-logo p { color: var(--text-secondary); margin-top: 8px; font-size: 0.9rem; }
+.splash-loader {
+    width: 200px; height: 3px; background: var(--bg-elevated);
+    border-radius: 99px; overflow: hidden; margin: 0 auto;
+}
+.loader-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    border-radius: 99px;
+    animation: load 1.5s ease-in-out forwards;
+}
+@keyframes load { to { width: 100%; } }
+
+/* ==================== APP ==================== */
+.app { height: 100%; display: flex; flex-direction: column; }
+.app.hidden { display: none; }
+
+/* ==================== HEADER ==================== */
+.header {
+    height: var(--header-height); padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.header h1 { font-size: 1.2rem; font-weight: 700; }
+.header-badge {
+    padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    min-width: 60px; text-align: center;
+}
+.header-badge.extreme-fear { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.header-badge.fear { background: rgba(239, 115, 68, 0.15); border-color: #ef7344; color: #ef7344; }
+.header-badge.neutral { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
+.header-badge.greed { background: rgba(132, 204, 22, 0.15); border-color: #84cc16; color: #84cc16; }
+.header-badge.extreme-greed { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
+/* ==================== PAGES ==================== */
+.pages-container { flex: 1; overflow: hidden; position: relative; }
+.page { position: absolute; inset: 0; bottom: var(--nav-height); display: none; }
+.page.active { display: block; }
+.page-scroll { height: 100%; overflow-y: auto; padding: 16px 16px 24px; }
+.page-scroll::-webkit-scrollbar { width: 0; }
+
+/* ==================== SECTION TITLES ==================== */
+.section-title {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text-secondary);
+    margin: 20px 0 10px;
+}
+.section-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px; }
+
+/* ==================== FEAR & GREED ==================== */
+.fng-card {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+    border: 1px solid var(--border-glow);
+    border-radius: 20px; padding: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+}
+.fng-title { font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.fng-value { font-size: 4rem; font-weight: 900; line-height: 1; }
+.fng-label { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+.fng-update { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+
+/* FNG color states */
+.fng-extreme-fear .fng-value { color: var(--red); }
+.fng-extreme-fear .fng-label { color: var(--red); }
+.fng-fear .fng-value { color: #ef7344; }
+.fng-fear .fng-label { color: #ef7344; }
+.fng-neutral .fng-value { color: var(--yellow); }
+.fng-neutral .fng-label { color: var(--yellow); }
+.fng-greed .fng-value { color: #84cc16; }
+.fng-greed .fng-label { color: #84cc16; }
+.fng-extreme-greed .fng-value { color: var(--green); }
+.fng-extreme-greed .fng-label { color: var(--green); }
+
+/* ==================== MARKET LINKS GRID ==================== */
+.market-links-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px;
+}
+.market-link-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; text-decoration: none;
+    text-align: center; transition: all 0.2s;
+}
+.market-link-card:active { transform: scale(0.96); background: var(--bg-elevated); }
+.ml-icon { font-size: 1.5rem; margin-bottom: 6px; }
+.ml-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+.ml-sub { font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* ==================== STATS ROW ==================== */
+.stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.stat-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 10px; text-align: center;
+}
+.stat-card.green { border-color: rgba(16, 185, 129, 0.3); }
+.stat-card.red { border-color: rgba(239, 68, 68, 0.3); }
+.stat-icon { font-size: 1.2rem; margin-bottom: 4px; }
+.stat-value { font-size: 1.2rem; font-weight: 800; }
+.stat-label { font-size: 0.65rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* ==================== RESOURCES LIST ==================== */
+.resources-list { display: flex; flex-direction: column; gap: 8px; }
+.resource-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; text-decoration: none;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.2s;
+}
+.resource-item:active { background: var(--bg-elevated); transform: scale(0.98); }
+.resource-item.big { padding: 16px; }
+.ri-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0; font-weight: 700;
+}
+.ri-icon.fear { background: var(--red-light); color: var(--red); }
+.ri-icon.halving { background: var(--yellow-light); color: var(--yellow); }
+.ri-icon.rainbow { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+.ri-icon.stf { background: var(--blue-light); color: var(--blue); }
+.ri-icon.arkham { background: var(--blue-light); color: var(--blue); }
+.ri-icon.nansen { background: var(--purple-light); color: var(--purple); }
+.ri-icon.eth { background: rgba(99, 102, 241, 0.15); color: var(--accent-light); font-size: 1rem; }
+.ri-icon.btc { background: var(--yellow-light); color: var(--yellow); }
+.ri-icon.debank { background: var(--green-light); color: var(--green); }
+.ri-icon.dune { background: rgba(16, 185, 129, 0.1); color: var(--green); }
+.ri-icon.glass { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
+.ri-icon.cq { background: rgba(168, 85, 247, 0.1); color: var(--purple); }
+.ri-icon.san { background: rgba(99, 102, 241, 0.1); color: var(--accent); }
+.ri-icon.pi { background: var(--yellow-light); color: var(--yellow); font-size: 1.3rem; }
+.ri-icon.nupl { background: var(--blue-light); color: var(--blue); }
+.ri-icon.mvrv { background: var(--green-light); color: var(--green); }
+.ri-icon.liq { background: var(--red-light); color: var(--red); }
+.ri-icon.funding { background: var(--yellow-light); color: var(--yellow); }
+.ri-icon.dom { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+.ri-icon.btcd { background: var(--yellow-light); color: var(--yellow); }
+.ri-info { flex: 1; min-width: 0; }
+.ri-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.ri-desc { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+.ri-tag {
+    font-size: 0.65rem; background: rgba(99,102,241,0.15);
+    color: var(--accent-light); padding: 2px 6px; border-radius: 6px;
+    display: inline-block; margin-top: 4px;
+}
+.ri-arrow { color: var(--text-muted); font-size: 1rem; flex-shrink: 0; }
+
+/* ==================== WHALE CARD ==================== */
+.whale-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; margin-bottom: 4px;
+}
+.whale-card.featured {
+    background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05));
+    border-color: rgba(239,68,68,0.3);
+}
+.wc-header { display: flex; align-items: center; gap: 12px; }
+.wc-icon { font-size: 1.8rem; }
+.wc-info { flex: 1; }
+.wc-name { font-size: 1rem; font-weight: 700; }
+.wc-desc { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+.wc-btn {
+    background: var(--accent); color: white; border: none;
+    padding: 8px 16px; border-radius: 10px; font-size: 0.85rem;
+    font-weight: 700; text-decoration: none; font-family: inherit;
+    cursor: pointer;
+}
+
+/* ==================== JOURNAL ==================== */
+.btn-add-trade {
+    width: 100%; background: linear-gradient(135deg, var(--accent), var(--purple));
+    color: white; border: none; border-radius: 14px; padding: 16px;
+    font-size: 1rem; font-weight: 700; font-family: inherit;
+    cursor: pointer; margin-bottom: 14px; transition: opacity 0.2s;
+}
+.btn-add-trade:active { opacity: 0.85; }
+
+.journal-filters { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+.journal-filters::-webkit-scrollbar { height: 0; }
+.filter-btn {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text-secondary); padding: 8px 14px; border-radius: 20px;
+    font-size: 0.8rem; white-space: nowrap; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+}
+.filter-btn.active {
+    background: rgba(99,102,241,0.2); border-color: var(--accent);
+    color: var(--accent-light);
+}
+
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-secondary); }
+.empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.9rem; }
+
+/* Trade Cards */
+.trade-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+}
+.trade-card.win { border-right: 3px solid var(--green); }
+.trade-card.loss { border-right: 3px solid var(--red); }
+.trade-card.open { border-right: 3px solid var(--accent); }
+.trade-card.breakeven { border-right: 3px solid var(--yellow); }
+
+.tc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.tc-pair { font-size: 1rem; font-weight: 800; }
+.tc-badge {
+    font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; font-weight: 700;
+}
+.tc-badge.long { background: var(--green-light); color: var(--green); }
+.tc-badge.short { background: var(--red-light); color: var(--red); }
+
+.tc-status {
+    font-size: 0.72rem; padding: 3px 8px; border-radius: 8px; font-weight: 700;
+}
+.tc-status.win { background: var(--green-light); color: var(--green); }
+.tc-status.loss { background: var(--red-light); color: var(--red); }
+.tc-status.open { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+.tc-status.breakeven { background: var(--yellow-light); color: var(--yellow); }
+
+.tc-prices { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.tc-price { text-align: center; }
+.tc-price-label { font-size: 0.65rem; color: var(--text-secondary); }
+.tc-price-val { font-size: 0.85rem; font-weight: 700; }
+.tc-price-val.stop { color: var(--red); }
+.tc-price-val.target { color: var(--green); }
+
+.tc-pnl {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px solid var(--border);
+}
+.tc-pnl-val { font-size: 1.1rem; font-weight: 800; }
+.tc-pnl-val.positive { color: var(--green); }
+.tc-pnl-val.negative { color: var(--red); }
+.tc-pnl-val.neutral { color: var(--text-secondary); }
+
+.tc-meta { font-size: 0.72rem; color: var(--text-secondary); }
+.tc-actions { display: flex; gap: 8px; margin-top: 10px; }
+.tc-btn {
+    flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem;
+    font-family: inherit; font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+    background: var(--bg-elevated); color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.tc-btn.edit { color: var(--accent-light); border-color: rgba(99,102,241,0.3); }
+.tc-btn.delete { color: var(--red); border-color: rgba(239,68,68,0.3); }
+.tc-notes { font-size: 0.78rem; color: var(--text-secondary); margin-top: 8px; padding: 8px; background: var(--bg-elevated); border-radius: 8px; }
+
+/* ==================== STRATEGIES ==================== */
+.profile-tabs {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px;
+}
+.profile-tab {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 8px; text-align: center;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.profile-tab.active {
+    background: rgba(99,102,241,0.15); border-color: var(--accent);
+}
+.pt-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.pt-label { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+
+.profile-section { margin-bottom: 16px; }
+.profile-header {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+    border: 1px solid var(--border); border-radius: 16px; padding: 20px;
+    margin-bottom: 14px; text-align: center;
+}
+.profile-header-icon { font-size: 2.5rem; margin-bottom: 8px; }
+.profile-header h2 { font-size: 1.3rem; font-weight: 800; }
+.profile-header p { font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; }
+.profile-header .timeframe {
+    display: inline-block; margin-top: 10px;
+    background: rgba(99,102,241,0.15); color: var(--accent-light);
+    padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+}
+
+.strategy-block {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+}
+.strategy-block-title {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px;
+}
+.strategy-rule {
+    display: flex; gap: 10px; align-items: flex-start; padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+}
+.strategy-rule:last-child { border-bottom: none; }
+.sr-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.sr-text { font-size: 0.85rem; line-height: 1.5; }
+.sr-text strong { color: var(--text); display: block; }
+.sr-text span { color: var(--text-secondary); font-size: 0.78rem; }
+
+/* ==================== RISK CALCULATOR ==================== */
+.calc-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; margin-bottom: 14px;
+}
+.calc-field { margin-bottom: 14px; }
+.calc-field:last-child { margin-bottom: 0; }
+.calc-field label { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+.calc-field input, .calc-field select {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; font-size: 0.95rem;
+    color: var(--text); font-family: inherit; outline: none;
+    transition: border-color 0.2s;
+}
+.calc-field input:focus, .calc-field select:focus { border-color: var(--accent); }
+
+.calc-presets { display: flex; gap: 8px; margin-bottom: 8px; }
+.calc-preset {
+    flex: 1; padding: 7px; background: var(--bg-elevated);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text-secondary); font-size: 0.8rem; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+}
+.calc-preset.active { background: rgba(99,102,241,0.2); border-color: var(--accent); color: var(--accent-light); }
+
+.calc-results {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; margin-bottom: 20px;
+}
+.result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.result-row:last-child { border-bottom: none; }
+.result-row span:first-child { font-size: 0.85rem; color: var(--text-secondary); }
+.result-val { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.result-val.danger { color: var(--red); }
+.result-val.green { color: var(--green); }
+
+.rules-card { display: flex; flex-direction: column; gap: 10px; }
+.rule-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px;
+}
+.rule-item.gold { border-right: 3px solid var(--yellow); }
+.rule-item.blue { border-right: 3px solid var(--blue); }
+.rule-item.red { border-right: 3px solid var(--red); }
+.rule-item.green { border-right: 3px solid var(--green); }
+.rule-item.purple { border-right: 3px solid var(--purple); }
+.rule-icon { font-size: 1.3rem; flex-shrink: 0; }
+.rule-text strong { font-size: 0.9rem; display: block; margin-bottom: 3px; }
+.rule-text p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; }
+
+/* ==================== CHARTS PAGE ==================== */
+.info-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; margin-bottom: 4px;
+}
+.info-card.featured {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+    border-color: rgba(99,102,241,0.3);
+}
+.info-card-icon { font-size: 2rem; margin-bottom: 10px; }
+.info-card-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.info-card-body p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+
+.cycle-phases {
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 14px; flex-wrap: wrap;
+}
+.phase {
+    padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+}
+.phase.acc { background: var(--blue-light); color: var(--blue); }
+.phase.bull { background: var(--green-light); color: var(--green); }
+.phase.dist { background: var(--yellow-light); color: var(--yellow); }
+.phase.bear { background: var(--red-light); color: var(--red); }
+.phase-arrow { color: var(--text-muted); font-size: 0.8rem; }
+
+/* Cycle Guide */
+.cycle-guide { display: flex; flex-direction: column; gap: 10px; }
+.cg-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px;
+}
+.cg-item.acc-phase { border-right: 3px solid var(--blue); }
+.cg-item.bull-phase { border-right: 3px solid var(--green); }
+.cg-item.dist-phase { border-right: 3px solid var(--yellow); }
+.cg-item.bear-phase { border-right: 3px solid var(--red); }
+.cg-icon { font-size: 1.5rem; flex-shrink: 0; }
+.cg-info strong { font-size: 0.9rem; display: block; margin-bottom: 4px; }
+.cg-info p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 6px; }
+.cg-action {
+    display: inline-block; font-size: 0.75rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 8px;
+}
+.cg-action.buy { background: var(--green-light); color: var(--green); }
+.cg-action.hold { background: var(--yellow-light); color: var(--yellow); }
+.cg-action.sell { background: var(--red-light); color: var(--red); }
+.cg-action.wait { background: var(--blue-light); color: var(--blue); }
+
+/* ==================== BOTTOM NAV ==================== */
+.bottom-nav {
+    height: var(--nav-height);
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    align-items: center; flex-shrink: 0;
+    padding: 0 2px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 8px 4px; background: none; border: none; cursor: pointer;
+    font-family: inherit; transition: all 0.2s; border-radius: 10px;
+}
+.nav-item.active .nav-icon, .nav-item.active .nav-label { color: var(--accent-light); }
+.nav-icon { font-size: 1.2rem; transition: transform 0.2s; }
+.nav-item.active .nav-icon { transform: scale(1.1); }
+.nav-label { font-size: 0.6rem; color: var(--text-muted); }
+
+/* ==================== MODAL ==================== */
+.modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(6, 6, 16, 0.92); display: none;
+    align-items: flex-end; justify-content: center;
+    padding: 16px;
+}
+.modal-overlay.show { display: flex; }
+.modal-content {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0; width: 100%; max-width: 500px;
+    max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+.modal-content.large { border-radius: 20px; }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0;
+    background: var(--bg-card);
+}
+.modal-header h2 { font-size: 1.1rem; }
+.modal-close {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    color: var(--text-secondary); width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-size: 0.9rem; font-family: inherit;
+}
+.modal-body { padding: 16px; }
+
+.form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.form-field { flex: 1; }
+.form-field.half { flex: 1; }
+.form-field.third { flex: 1; }
+.form-field label { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+.form-field input, .form-field select, .form-field textarea {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; font-size: 0.9rem;
+    color: var(--text); font-family: inherit; outline: none;
+    transition: border-color 0.2s;
+}
+.form-field textarea { resize: none; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    border-color: var(--accent);
+}
+
+.direction-toggle { display: flex; gap: 8px; }
+.dir-btn {
+    flex: 1; padding: 10px; border-radius: 10px;
+    font-family: inherit; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--bg-elevated); color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.dir-btn.active { background: rgba(99,102,241,0.2); border-color: var(--accent); color: var(--accent-light); }
+.dir-btn[id="dir-long"].active { background: var(--green-light); border-color: var(--green); color: var(--green); }
+.dir-btn[id="dir-short"].active { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+.btn-primary {
+    width: 100%; background: linear-gradient(135deg, var(--accent), var(--purple));
+    color: white; border: none; border-radius: 12px; padding: 14px;
+    font-size: 0.95rem; font-weight: 700; font-family: inherit;
+    cursor: pointer; margin-top: 14px; transition: opacity 0.2s;
+}
+.btn-primary:active { opacity: 0.85; }
+
+/* ==================== TOAST ==================== */
+.toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 20px; border-radius: 12px;
+    font-size: 0.85rem; opacity: 0; transition: all 0.3s; z-index: 9999;
+    white-space: nowrap; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    </style>
 </head>
 <body>
 
@@ -695,6 +1250,637 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="crypto-app.js"></script>
+    <script>
+// ==================== CRYPTOEDGE - APP.JS ====================
+// Professional Crypto Trading Platform - Hebrew RTL
+
+// ==================== STATE ====================
+let currentPage = 'dashboard';
+let trades = [];
+let tradeDirection = 'long';
+let riskPct = 2;
+let journalFilter = 'all';
+
+// ==================== LOCAL STORAGE ====================
+function getData(key, def) {
+    try {
+        const v = localStorage.getItem('cryptoedge_' + key);
+        return v ? JSON.parse(v) : def;
+    } catch { return def; }
+}
+function setData(key, val) {
+    localStorage.setItem('cryptoedge_' + key, JSON.stringify(val));
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        document.getElementById('splash').classList.add('hide');
+        document.getElementById('app').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+        }, 600);
+        initApp();
+    }, 1800);
+});
+
+function initApp() {
+    trades = getData('trades', []);
+    fetchFearGreed();
+    showProfile('day');
+    renderTradesList();
+    updateDashboardStats();
+    setDefaultDate();
+    calculateRisk();
+}
+
+// ==================== FEAR & GREED INDEX ====================
+async function fetchFearGreed() {
+    try {
+        const res = await fetch('https://api.alternative.me/fng/?limit=1&format=json');
+        const data = await res.json();
+        if (data && data.data && data.data[0]) {
+            const fng = data.data[0];
+            updateFearGreedUI(parseInt(fng.value), fng.value_classification);
+        }
+    } catch (e) {
+        // Fallback: show cached or static
+        document.getElementById('fng-value').textContent = '--';
+        document.getElementById('fng-label').textContent = 'לא ניתן לטעון';
+        document.getElementById('fng-update').textContent = 'בדוק חיבור לאינטרנט';
+    }
+}
+
+function updateFearGreedUI(value, classification) {
+    const card = document.getElementById('fng-card');
+    const valEl = document.getElementById('fng-value');
+    const labelEl = document.getElementById('fng-label');
+    const updateEl = document.getElementById('fng-update');
+    const headerBadge = document.getElementById('fng-header-badge');
+
+    valEl.textContent = value;
+
+    const labels = {
+        'Extreme Fear': 'פחד קיצוני',
+        'Fear': 'פחד',
+        'Neutral': 'ניטרלי',
+        'Greed': 'תאוות בצע',
+        'Extreme Greed': 'תאוות בצע קיצונית'
+    };
+    const classes = {
+        'Extreme Fear': 'extreme-fear',
+        'Fear': 'fear',
+        'Neutral': 'neutral',
+        'Greed': 'greed',
+        'Extreme Greed': 'extreme-greed'
+    };
+
+    const hebrewLabel = labels[classification] || classification;
+    const cssClass = classes[classification] || 'neutral';
+
+    labelEl.textContent = hebrewLabel;
+    card.className = 'fng-card fng-' + cssClass;
+    updateEl.textContent = `עודכן: ${new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}`;
+
+    // Update header badge
+    headerBadge.textContent = `${value} - ${hebrewLabel}`;
+    headerBadge.className = 'header-badge ' + cssClass;
+
+    // Draw gauge
+    drawFearGreedGauge(value);
+
+    // Cache it
+    setData('last_fng', { value, classification, time: Date.now() });
+}
+
+function drawFearGreedGauge(value) {
+    const canvas = document.getElementById('fng-gauge');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 140;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.scale(dpr, dpr);
+
+    const cx = size / 2, cy = size / 2 + 10;
+    const r = 55;
+    const startAngle = Math.PI;
+    const endAngle = 0;
+    const pct = value / 100;
+    const currentAngle = Math.PI + (Math.PI * pct);
+
+    // Background arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, endAngle, false);
+    ctx.strokeStyle = '#1a1a30';
+    ctx.lineWidth = 12;
+    ctx.stroke();
+
+    // Colored arc - gradient from red to green
+    const segments = [
+        { start: Math.PI, end: Math.PI + 0.4, color: '#ef4444' },
+        { start: Math.PI + 0.4, end: Math.PI + 0.8, color: '#f97316' },
+        { start: Math.PI + 0.8, end: Math.PI + 1.2, color: '#f59e0b' },
+        { start: Math.PI + 1.2, end: Math.PI + 1.6, color: '#84cc16' },
+        { start: Math.PI + 1.6, end: Math.PI + Math.PI, color: '#10b981' }
+    ];
+
+    segments.forEach(seg => {
+        const segEnd = Math.min(seg.end, currentAngle);
+        if (segEnd <= seg.start) return;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, seg.start, segEnd, false);
+        ctx.strokeStyle = seg.color;
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+    });
+
+    // Needle
+    const needleAngle = Math.PI + (Math.PI * pct);
+    const nx = cx + Math.cos(needleAngle) * (r - 5);
+    const ny = cy + Math.sin(needleAngle) * (r - 5);
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(nx, ny);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    // Labels
+    ctx.fillStyle = '#ef4444';
+    ctx.font = `bold ${9 * dpr / dpr}px -apple-system, sans-serif`;
+    ctx.textAlign = 'right';
+    ctx.fillText('פחד', cx - r - 2, cy + 16);
+
+    ctx.fillStyle = '#10b981';
+    ctx.textAlign = 'left';
+    ctx.fillText('בצע', cx + r + 2, cy + 16);
+}
+
+// ==================== PAGE NAVIGATION ====================
+function switchPage(pageName) {
+    currentPage = pageName;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${pageName}`)?.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.page === pageName) item.classList.add('active');
+    });
+
+    const titles = {
+        dashboard: 'דשבורד',
+        journal: 'יומן מסחר',
+        strategies: 'אסטרטגיות',
+        risk: 'ניהול סיכונים',
+        whales: 'מעקב לווייתנים',
+        charts: 'גרפים היסטוריים'
+    };
+    document.getElementById('page-title').textContent = titles[pageName] || 'CryptoEdge';
+}
+
+// ==================== DASHBOARD STATS ====================
+function updateDashboardStats() {
+    const closedTrades = trades.filter(t => t.status !== 'open');
+    const wins = trades.filter(t => t.status === 'win');
+    const totalPnl = closedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const winRate = closedTrades.length > 0 ? Math.round((wins.length / closedTrades.length) * 100) : 0;
+
+    document.getElementById('total-trades-val').textContent = trades.length;
+    document.getElementById('win-rate-val').textContent = winRate + '%';
+
+    const pnlEl = document.getElementById('total-pnl-val');
+    pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + '$' + Math.abs(totalPnl).toFixed(0);
+    pnlEl.style.color = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+    const pnlCard = document.getElementById('stat-pnl');
+    pnlCard.style.borderColor = totalPnl >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)';
+}
+
+// ==================== TRADING JOURNAL ====================
+function setDefaultDate() {
+    const dateInput = document.getElementById('trade-date');
+    if (dateInput) {
+        const d = new Date();
+        dateInput.value = d.toISOString().split('T')[0];
+    }
+}
+
+function openAddTrade() {
+    document.getElementById('trade-edit-id').value = '';
+    document.getElementById('modal-title').textContent = 'עסקה חדשה';
+    document.getElementById('trade-pair').value = '';
+    document.getElementById('trade-entry').value = '';
+    document.getElementById('trade-stop').value = '';
+    document.getElementById('trade-target').value = '';
+    document.getElementById('trade-exit').value = '';
+    document.getElementById('trade-size').value = '';
+    document.getElementById('trade-notes').value = '';
+    document.getElementById('trade-leverage').value = '1';
+    document.getElementById('trade-strategy').value = 'swing';
+    document.getElementById('trade-status').value = 'open';
+    setDirection('long');
+    setDefaultDate();
+    document.getElementById('trade-modal').classList.add('show');
+}
+
+function closeTradeModal(event) {
+    if (!event || event.target.id === 'trade-modal' || event.target.classList.contains('modal-close')) {
+        document.getElementById('trade-modal').classList.remove('show');
+    }
+}
+
+function setDirection(dir) {
+    tradeDirection = dir;
+    document.getElementById('dir-long').classList.toggle('active', dir === 'long');
+    document.getElementById('dir-short').classList.toggle('active', dir === 'short');
+}
+
+function saveTrade() {
+    const pair = document.getElementById('trade-pair').value.trim().toUpperCase();
+    if (!pair) { showToast('❌ הכנס זוג מסחר'); return; }
+
+    const entry = parseFloat(document.getElementById('trade-entry').value);
+    const stop = parseFloat(document.getElementById('trade-stop').value);
+    const target = parseFloat(document.getElementById('trade-target').value);
+    const exit = parseFloat(document.getElementById('trade-exit').value);
+    const size = parseFloat(document.getElementById('trade-size').value);
+    const leverage = parseInt(document.getElementById('trade-leverage').value);
+    const status = document.getElementById('trade-status').value;
+    const notes = document.getElementById('trade-notes').value.trim();
+    const date = document.getElementById('trade-date').value;
+    const strategy = document.getElementById('trade-strategy').value;
+
+    // Calculate P&L
+    let pnl = 0;
+    if (!isNaN(exit) && !isNaN(entry) && !isNaN(size) && exit > 0) {
+        const priceChange = tradeDirection === 'long'
+            ? (exit - entry) / entry
+            : (entry - exit) / entry;
+        pnl = size * priceChange * leverage;
+    }
+
+    // Calculate R:R
+    let rr = 0;
+    if (!isNaN(entry) && !isNaN(stop) && !isNaN(target) && stop !== entry) {
+        const risk = Math.abs(entry - stop);
+        const reward = Math.abs(target - entry);
+        rr = reward / risk;
+    }
+
+    const editId = document.getElementById('trade-edit-id').value;
+    const trade = {
+        id: editId || Date.now().toString(),
+        pair, direction: tradeDirection, entry, stop, target, exit: isNaN(exit) ? null : exit,
+        size: isNaN(size) ? null : size, leverage, status, notes, date, strategy,
+        pnl: Math.round(pnl * 100) / 100, rr: Math.round(rr * 100) / 100
+    };
+
+    if (editId) {
+        const idx = trades.findIndex(t => t.id === editId);
+        if (idx >= 0) trades[idx] = trade;
+    } else {
+        trades.unshift(trade);
+    }
+
+    setData('trades', trades);
+    closeTradeModal();
+    renderTradesList();
+    updateDashboardStats();
+    showToast('✅ עסקה נשמרה!');
+}
+
+function editTrade(id) {
+    const trade = trades.find(t => t.id === id);
+    if (!trade) return;
+
+    document.getElementById('trade-edit-id').value = id;
+    document.getElementById('modal-title').textContent = 'עריכת עסקה';
+    document.getElementById('trade-pair').value = trade.pair;
+    document.getElementById('trade-entry').value = trade.entry || '';
+    document.getElementById('trade-stop').value = trade.stop || '';
+    document.getElementById('trade-target').value = trade.target || '';
+    document.getElementById('trade-exit').value = trade.exit || '';
+    document.getElementById('trade-size').value = trade.size || '';
+    document.getElementById('trade-leverage').value = trade.leverage || '1';
+    document.getElementById('trade-strategy').value = trade.strategy || 'swing';
+    document.getElementById('trade-status').value = trade.status || 'open';
+    document.getElementById('trade-notes').value = trade.notes || '';
+    document.getElementById('trade-date').value = trade.date || '';
+    setDirection(trade.direction || 'long');
+    document.getElementById('trade-modal').classList.add('show');
+}
+
+function deleteTrade(id) {
+    if (!confirm('למחוק את העסקה?')) return;
+    trades = trades.filter(t => t.id !== id);
+    setData('trades', trades);
+    renderTradesList();
+    updateDashboardStats();
+    showToast('🗑️ עסקה נמחקה');
+}
+
+function filterJournal(filter, btn) {
+    journalFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTradesList();
+}
+
+function renderTradesList() {
+    const container = document.getElementById('trades-list');
+    let filtered = [...trades];
+
+    if (journalFilter !== 'all') {
+        filtered = filtered.filter(t => t.status === journalFilter);
+    }
+
+    if (filtered.length === 0) {
+        const msg = journalFilter === 'all'
+            ? 'עדיין אין עסקאות. הוסף את העסקה הראשונה שלך!'
+            : 'אין עסקאות בקטגוריה זו';
+        container.innerHTML = `<div class="empty-state"><div class="empty-icon">📓</div><p>${msg}</p></div>`;
+        return;
+    }
+
+    const strategyLabels = { day: 'יומי ⚡', swing: 'סווינג 📈', investor: 'השקעה 💎' };
+    const statusLabels = { win: '✅ רווח', loss: '❌ הפסד', open: '🔄 פתוח', breakeven: '➖ BEP' };
+
+    container.innerHTML = filtered.map(trade => {
+        const pnlClass = trade.status === 'open' ? 'neutral' : (trade.pnl > 0 ? 'positive' : trade.pnl < 0 ? 'negative' : 'neutral');
+        const pnlText = trade.status === 'open' ? 'פתוח' : (trade.pnl !== 0 ? (trade.pnl > 0 ? '+$' : '-$') + Math.abs(trade.pnl).toFixed(0) : '$0');
+        const formatPrice = p => p ? '$' + Number(p).toLocaleString() : '--';
+
+        return `<div class="trade-card ${trade.status}">
+            <div class="tc-header">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="tc-pair">${trade.pair}</div>
+                    <div class="tc-badge ${trade.direction}">${trade.direction === 'long' ? '📈 לונג' : '📉 שורט'}</div>
+                    ${trade.leverage > 1 ? `<div class="tc-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">${trade.leverage}x</div>` : ''}
+                </div>
+                <div class="tc-status ${trade.status}">${statusLabels[trade.status] || trade.status}</div>
+            </div>
+            <div class="tc-prices">
+                <div class="tc-price">
+                    <div class="tc-price-label">כניסה</div>
+                    <div class="tc-price-val">${formatPrice(trade.entry)}</div>
+                </div>
+                <div class="tc-price">
+                    <div class="tc-price-label">סטופ</div>
+                    <div class="tc-price-val stop">${formatPrice(trade.stop)}</div>
+                </div>
+                <div class="tc-price">
+                    <div class="tc-price-label">יעד</div>
+                    <div class="tc-price-val target">${formatPrice(trade.target)}</div>
+                </div>
+            </div>
+            <div class="tc-pnl">
+                <div>
+                    <div class="tc-meta">${trade.date || ''} | ${strategyLabels[trade.strategy] || ''} | R:R ${trade.rr || 0}:1</div>
+                    ${trade.size ? `<div class="tc-meta">גודל: $${trade.size.toLocaleString()}</div>` : ''}
+                </div>
+                <div class="tc-pnl-val ${pnlClass}">${pnlText}</div>
+            </div>
+            ${trade.notes ? `<div class="tc-notes">📝 ${trade.notes}</div>` : ''}
+            <div class="tc-actions">
+                <button class="tc-btn edit" onclick="editTrade('${trade.id}')">✏️ ערוך</button>
+                <button class="tc-btn delete" onclick="deleteTrade('${trade.id}')">🗑️ מחק</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ==================== STRATEGIES ====================
+const PROFILES = {
+    day: {
+        icon: '⚡',
+        title: 'סוחר יומי',
+        subtitle: 'מסחר מהיר | פוזיציות נסגרות תוך יום | דורש ניסיון וריכוז',
+        timeframe: 'גרף 1M / 5M / 15M',
+        blocks: [
+            {
+                title: 'עקרונות בסיסיים',
+                rules: [
+                    { icon: '⏰', title: 'שעות מסחר קבועות', desc: 'מסחר רק ב-3-4 שעות ספציפיות (למשל 09:00-12:00). אין לסחור בכל שעה!' },
+                    { icon: '🎯', title: 'מקסימום 3 עסקאות ביום', desc: 'פחות עסקאות = יותר בחירתיות = יותר רווחיות. אל תכנס לכל סיגנל' },
+                    { icon: '🛑', title: 'הפסד יומי מקסימלי 3%', desc: 'אם הפסדת 3% מהתיק ביום - סגור הכל ועצור. חלקה גרועה קורית לכולם' },
+                    { icon: '📵', title: 'ללא עסקאות פתוחות לילה', desc: 'כל הפוזיציות נסגרות לפני סוף יום המסחר. אין לישון עם פוזיציות לא מנוהלות' }
+                ]
+            },
+            {
+                title: 'כניסה ויציאה',
+                rules: [
+                    { icon: '📊', title: 'רק בכיוון הטרנד', desc: 'זהה טרנד ב-1H ואז כנס נגד רעש ב-5M. מסחר עם הרוח - לא נגדה' },
+                    { icon: '⚖️', title: 'R:R מינימלי 1:1.5', desc: 'לסחר יומי יחס 1:1.5 מספיק בגלל כמות הסטאפים הגבוהה' },
+                    { icon: '🔑', title: 'סטופ מתחת ל-S/R', desc: 'תמיד תן סטופ מתחת/מעל support/resistance ולא בגודל שרירותי' },
+                    { icon: '💸', title: 'Scale out בחצי', desc: 'מכור חצי ביעד הראשון, הזז סטופ ל-breakeven, תן לחצי השני לרוץ' }
+                ]
+            },
+            {
+                title: 'פסיכולוגיה',
+                rules: [
+                    { icon: '🧠', title: 'אל תנקום בשוק', desc: 'אחרי הפסד - הפסקה של 30 דק\' לפחות. הרגש הוא האויב הגדול ביותר' },
+                    { icon: '📓', title: 'רשום כל עסקה', desc: 'למה נכנסת, מה הרגשת, מה קרה. זה הכלי החשוב ביותר לשיפור' },
+                    { icon: '✅', title: 'אל תשנה סטופ לוס', desc: 'אם נגדת את הסטופ שלך - חרית את הקבר שלך. כבד את ה-plan שלך' }
+                ]
+            },
+            {
+                title: 'אינדיקטורים מומלצים',
+                rules: [
+                    { icon: '📈', title: 'EMA 8/21/50', desc: 'ממוצעים נעים לזיהוי כיוון מסחר וקרוס-אובר' },
+                    { icon: '🌊', title: 'RSI + MACD', desc: 'זיהוי אזורי קנה מכירה יתר וחיזוק כיוון' },
+                    { icon: '📊', title: 'Volume Profile', desc: 'זיהוי אזורי מחיר חשובים לפי נפח מסחר' },
+                    { icon: '💧', title: 'Liquidity Zones', desc: 'זיהוי מלכודות Bull/Bear ו-Stop Hunt zones' }
+                ]
+            }
+        ]
+    },
+    swing: {
+        icon: '📈',
+        title: 'סוחר סווינג',
+        subtitle: 'עסקאות 3-14 ימים | פחות לחץ | ניתוח טכני מעמיק',
+        timeframe: 'גרף 4H / 1D',
+        blocks: [
+            {
+                title: 'עקרונות בסיסיים',
+                rules: [
+                    { icon: '📅', title: 'ניתוח יומי - לא שעתי', desc: 'בדוק פוזיציות פעם-פעמיים ביום. מסחר סווינג לא צריך מעקב רציף' },
+                    { icon: '🔍', title: 'כנס רק ל-High Probability', desc: 'חכה לסטאפ מושלם. עדיף 3 עסקאות מוצלחות מ-10 ממוצעות' },
+                    { icon: '⏳', title: 'קביעת זמן לעסקה', desc: 'אם אחרי 7 ימים העסקה לא זזה - שקול לסגור. כסף תקוע = הפסד' },
+                    { icon: '🌙', title: 'עסקאות לילה בסדר', desc: 'סטופ ויעד מוגדרים מראש - ניתן לישון בלי דאגה' }
+                ]
+            },
+            {
+                title: 'סטאפ אופטימלי',
+                rules: [
+                    { icon: '📊', title: 'Trend Continuation', desc: 'פוקס על pull-back לאחר break of structure בטרנד חזק' },
+                    { icon: '🔄', title: 'Range Breakout', desc: 'כניסה אחרי פריצת תחום תנודה עם volume גבוה' },
+                    { icon: '🎯', title: 'R:R מינימלי 1:3', desc: 'לסווינג, הסיכון גבוה יותר לכן הפוטנציאל צריך להיות פי 3 לפחות' },
+                    { icon: '📉', title: 'סטופ מעל/מתחת swing point', desc: 'הצב סטופ מעל/מתחת לנקודת הקיצון האחרונה + 0.5-1% buffer' }
+                ]
+            },
+            {
+                title: 'ניהול פוזיציה פעילה',
+                rules: [
+                    { icon: '🚶', title: 'Trailing Stop', desc: 'כשעסקה ברווח, הזז סטופ לנקודת כניסה ואז הוסף trailing' },
+                    { icon: '✂️', title: 'Partial Profit Taking', desc: 'מכור 30-50% ביעד הראשון, החזק שארית לתנועה הגדולה' },
+                    { icon: '📰', title: 'שמור על חדשות', desc: 'בדוק אם יש אירועים כלכליים/קריפטו שיכולים להשפיע על הפוזיציה' }
+                ]
+            },
+            {
+                title: 'זיהוי אזורים חשובים',
+                rules: [
+                    { icon: '🏔️', title: 'Support & Resistance', desc: 'זהה רמות S&R שבועיות וחודשיות לפני כניסה לעסקה' },
+                    { icon: '🔢', title: 'Fibonacci Retracements', desc: '38.2%, 50%, 61.8% - אזורי כניסה אידיאליים בפולבק' },
+                    { icon: '📦', title: 'Order Blocks', desc: 'זהה אזורי ביקוש/היצע מוסדיים בגרף 4H ו-Daily' }
+                ]
+            }
+        ]
+    },
+    investor: {
+        icon: '💎',
+        title: 'משקיע לטווח ארוך',
+        subtitle: 'HODL חכם | DCA | שמירה על עושר לאורך הסייקל',
+        timeframe: 'גרף שבועי / חודשי',
+        blocks: [
+            {
+                title: 'אסטרטגיית כניסה',
+                rules: [
+                    { icon: '📆', title: 'DCA - Dollar Cost Averaging', desc: 'קנה סכום קבוע כל שבוע/חודש ללא קשר למחיר. מנטרל טיימינג גרוע' },
+                    { icon: '😱', title: 'קנה בפחד קיצוני', desc: 'כש-FNG מתחת ל-20 - זה זמן להגדיל פוזיציות. "Be greedy when others are fearful"' },
+                    { icon: '💰', title: 'הקצה 70/30', desc: '70% ביטקוין ואת\'ריום, 30% אלטקוין עם fundamentals חזקים' },
+                    { icon: '🏦', title: 'Stablecoins ברזרבה', desc: 'שמור 20-30% USDT/USDC לקניות בירידות' }
+                ]
+            },
+            {
+                title: 'אסטרטגיית יציאה',
+                rules: [
+                    { icon: '📊', title: 'מכור לפי מדדים', desc: 'NUPL באופוריה + Pi Cycle Top + FNG מעל 80 - שקול מכירה הדרגתית' },
+                    { icon: '🎯', title: 'יעדי מחיר מראש', desc: 'קבע מראש: 25% אוכר ב-X, עוד 25% ב-Y. בצע מכנית - ללא רגשות' },
+                    { icon: '🔄', title: 'Rotate לStables בשיא', desc: 'בשיאי הסייקל - עבור ל-Stablecoins, לא לדולרים. שמור בקריפטו' }
+                ]
+            },
+            {
+                title: 'בחירת נכסים',
+                rules: [
+                    { icon: '₿', title: 'Bitcoin - Reserve Asset', desc: 'BTC הוא "זהב דיגיטלי". 40-60% מהתיק. הכי בטוח יחסית' },
+                    { icon: 'Ξ', title: 'Ethereum - Infrastructure', desc: 'ETH הוא "שמן הכלכלה הדיגיטלית". 20-30% מהתיק' },
+                    { icon: '⭐', title: 'Blue Chip Alts', desc: 'SOL, BNB, AVAX - לא ממש "alts". 10-20% בתיק' },
+                    { icon: '🚀', title: 'High Risk Alts - מקסימום 10%', desc: 'אלטקוינים קטנים - פוטנציאל גבוה = סיכון גבוה. לא יותר מ-10%' }
+                ]
+            },
+            {
+                title: 'שמירת נכסים',
+                rules: [
+                    { icon: '🔐', title: 'Hardware Wallet חובה', desc: 'Ledger/Trezor לסכומים מעל $1,000. "Not your keys, not your coins"' },
+                    { icon: '🌱', title: 'Seed Phrase גיבוי', desc: 'גבה את ה-seed phrase ב-3 מקומות שונים. אל תצלם, אל תשמור בענן' },
+                    { icon: '📋', title: 'תיעוד לצרכי מס', desc: 'שמור רישום של כל קנייה ומכירה. בישראל - מס רווחי הון 25%' }
+                ]
+            }
+        ]
+    }
+};
+
+function showProfile(type) {
+    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+    const activeIdx = { day: 0, swing: 1, investor: 2 }[type];
+    document.querySelectorAll('.profile-tab')[activeIdx]?.classList.add('active');
+
+    const profile = PROFILES[type];
+    const container = document.getElementById('profile-content');
+
+    let html = `<div class="profile-section">
+        <div class="profile-header">
+            <div class="profile-header-icon">${profile.icon}</div>
+            <h2>${profile.title}</h2>
+            <p>${profile.subtitle}</p>
+            <div class="timeframe">${profile.timeframe}</div>
+        </div>`;
+
+    profile.blocks.forEach(block => {
+        html += `<div class="strategy-block">
+            <div class="strategy-block-title">${block.title}</div>`;
+
+        block.rules.forEach(rule => {
+            html += `<div class="strategy-rule">
+                <div class="sr-icon">${rule.icon}</div>
+                <div class="sr-text">
+                    <strong>${rule.title}</strong>
+                    <span>${rule.desc}</span>
+                </div>
+            </div>`;
+        });
+
+        html += `</div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+// ==================== RISK CALCULATOR ====================
+function setRiskPct(pct) {
+    riskPct = pct;
+    document.getElementById('calc-risk-pct').value = pct;
+    document.querySelectorAll('.calc-preset').forEach(b => {
+        b.classList.toggle('active', parseInt(b.textContent) === pct);
+    });
+    calculateRisk();
+}
+
+function calculateRisk() {
+    const portfolio = parseFloat(document.getElementById('calc-portfolio')?.value) || 0;
+    const riskPctVal = parseFloat(document.getElementById('calc-risk-pct')?.value) || 2;
+    const entry = parseFloat(document.getElementById('calc-entry')?.value) || 0;
+    const stop = parseFloat(document.getElementById('calc-stop')?.value) || 0;
+    const target = parseFloat(document.getElementById('calc-target')?.value) || 0;
+
+    if (!portfolio || !entry || !stop) {
+        return;
+    }
+
+    const riskAmount = portfolio * (riskPctVal / 100);
+    const stopDistance = Math.abs(entry - stop);
+    const stopPct = (stopDistance / entry) * 100;
+    const positionSize = stopDistance > 0 ? riskAmount / stopDistance * entry : 0;
+    const coins = stopDistance > 0 ? riskAmount / stopDistance : 0;
+    const profitPotential = target > 0 && coins > 0 ? Math.abs(target - entry) * coins : 0;
+    const rr = stopDistance > 0 && target > 0 ? Math.abs(target - entry) / stopDistance : 0;
+
+    document.getElementById('res-risk-amount').textContent = '$' + riskAmount.toFixed(0);
+    document.getElementById('res-position').textContent = '$' + positionSize.toFixed(0);
+    document.getElementById('res-coins').textContent = coins.toFixed(4);
+    document.getElementById('res-rr').textContent = rr.toFixed(1) + ':1';
+    document.getElementById('res-profit').textContent = '+$' + profitPotential.toFixed(0);
+    document.getElementById('res-stop-pct').textContent = stopPct.toFixed(1) + '%';
+
+    const rrEl = document.getElementById('res-rr');
+    if (rr >= 2) {
+        rrEl.style.color = 'var(--green)';
+    } else if (rr >= 1) {
+        rrEl.style.color = 'var(--yellow)';
+    } else {
+        rrEl.style.color = 'var(--red)';
+    }
+}
+
+// ==================== UTILS ====================
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+    </script>
 </body>
 </html>
