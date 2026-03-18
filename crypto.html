@@ -2121,10 +2121,10 @@ function renderTradesList() {
             </div>
             ${trade.notes ? `<div class="tc-notes">📝 ${trade.notes}</div>` : ''}
             <div class="tc-actions">
-                \${trade.status === 'limit' ? `<button class="tc-btn activate" onclick="activateLimitTrade('\${trade.id}')">✅ אשר כניסה</button>` : ''}
-                \${trade.status === 'open' ? `<button class="tc-btn close-trade" onclick="openCloseTrade('\${trade.id}')">🔴 סגור עסקה</button>` : ''}
-                <button class="tc-btn edit" onclick="editTrade('\${trade.id}')">✏️ ערוך</button>
-                <button class="tc-btn delete" onclick="deleteTrade('\${trade.id}')">🗑️ מחק</button>
+                ${trade.status === 'limit' ? '<button class="tc-btn activate" onclick="activateLimitTrade(\'' + trade.id + '\')">✅ אשר כניסה</button>' : ''}
+                ${trade.status === 'open'  ? '<button class="tc-btn close-trade" onclick="openCloseTrade(\'' + trade.id + '\')">🔴 סגור עסקה</button>' : ''}
+                <button class="tc-btn edit"   onclick="editTrade('${trade.id}')">✏️ ערוך</button>
+                <button class="tc-btn delete" onclick="deleteTrade('${trade.id}')">🗑️ מחק</button>
             </div>
         </div>`;
     }).join('');
@@ -3147,11 +3147,9 @@ function exportCSV() {
         t.size || '', t.leverage || 1,
         t.status || '', t.rr || 0, t.pnl || 0,
         t.strategy || '',
-        (t.notes || '').replace(/,/g, ';').replace(/
-/g, ' ')
+        (t.notes || '').replace(/,/g, ';').replace(/\n/g, ' ')
     ]);
-    const csv = [headers, ...rows].map(r => r.join(',')).join('
-');
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
     const bom  = '﻿'; // UTF-8 BOM for Excel Hebrew support
     const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
     const url  = URL.createObjectURL(blob);
