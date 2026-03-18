@@ -562,6 +562,202 @@ html, body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+
+/* ==================== LIVE PRICES ==================== */
+.live-prices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.price-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; position: relative;
+}
+.price-card.btc { border-color: rgba(245,158,11,0.3); }
+.price-card.eth { border-color: rgba(99,102,241,0.3); }
+.price-symbol { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 4px; }
+.price-value { font-size: 1.3rem; font-weight: 900; margin: 2px 0; }
+.price-change { font-size: 0.75rem; font-weight: 700; padding: 2px 7px; border-radius: 6px; display: inline-block; }
+.price-change.up { background: var(--green-light); color: var(--green); }
+.price-change.down { background: var(--red-light); color: var(--red); }
+.price-refresh-time { font-size: 0.62rem; color: var(--text-muted); margin-top: 4px; }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-left: 4px; vertical-align: middle; animation: livepulse 2s infinite; }
+@keyframes livepulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.8);} }
+
+/* ==================== NEWS ==================== */
+.news-list { display: flex; flex-direction: column; gap: 8px; }
+.news-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 14px; text-decoration: none;
+    display: flex; align-items: flex-start; gap: 10px; transition: all 0.2s;
+}
+.news-item:active { background: var(--bg-elevated); transform: scale(0.98); }
+.news-bullet { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+.news-content { flex: 1; min-width: 0; }
+.news-title { font-size: 0.83rem; font-weight: 600; color: var(--text); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.news-meta { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; }
+.news-loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.82rem; }
+
+/* ==================== RISK FEEDBACK ==================== */
+.risk-feedback { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.rf-title { font-size: 0.65rem; color: var(--text-muted); width: 100%; margin-bottom: 2px; letter-spacing: 0.5px; }
+.rf-badge { font-size: 0.68rem; padding: 3px 8px; border-radius: 8px; font-weight: 600; }
+.rf-badge.good { background: var(--green-light); color: var(--green); }
+.rf-badge.warn { background: var(--yellow-light); color: var(--yellow); }
+.rf-badge.bad { background: var(--red-light); color: var(--red); }
+.rf-badge.info { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+
+/* ==================== DETAILED STATS ==================== */
+.stats-detail-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+.stats-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-item { padding: 12px; background: var(--bg-elevated); border-radius: 12px; text-align: center; }
+.stat-item-val { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+.stat-item-label { font-size: 0.68rem; color: var(--text-secondary); }
+
+/* ==================== REPORT MODAL ==================== */
+.report-modal-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(6,6,16,0.96); display: none;
+    align-items: center; justify-content: center; padding: 16px;
+}
+.report-modal-overlay.show { display: flex; }
+.report-modal {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 20px; width: 100%; max-width: 480px;
+    max-height: 88vh; overflow-y: auto; animation: slideUp 0.3s ease;
+}
+.report-content {
+    padding: 12px; background: var(--bg-elevated); border-radius: 10px;
+    margin: 10px 0; font-size: 0.73rem; line-height: 1.75;
+    white-space: pre-wrap; font-family: monospace; color: var(--text-secondary);
+    max-height: 260px; overflow-y: auto;
+}
+.btn-secondary {
+    width: 100%; background: var(--bg-elevated); color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+    font-size: 0.9rem; font-weight: 600; font-family: inherit; cursor: pointer; margin-top: 8px;
+}
+
+
+/* ==================== MACRO NEWS TABS ==================== */
+.news-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.news-tab {
+    flex: 1; padding: 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 600;
+    font-family: inherit; cursor: pointer; border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text-secondary); transition: all 0.2s;
+}
+.news-tab.active { background: rgba(99,102,241,0.2); border-color: var(--accent); color: var(--accent-light); }
+
+/* ==================== PCT HELPER ==================== */
+.pct-helpers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.pct-helper-box {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; font-size: 0.75rem;
+}
+.pct-helper-label { color: var(--text-muted); margin-bottom: 2px; }
+.pct-helper-val { font-weight: 700; }
+.pct-helper-val.danger { color: var(--red); }
+.pct-helper-val.success { color: var(--green); }
+
+/* close type badge */
+.tc-close-type {
+    font-size: 0.68rem; padding: 2px 7px; border-radius: 6px; font-weight: 600;
+    background: var(--blue-light); color: var(--blue); display: inline-block; margin-top: 3px;
+}
+
+
+/* ==================== ANALYTICS ==================== */
+.analytics-section { margin-bottom: 16px; }
+.portfolio-roi-card {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+    border: 1px solid var(--border-glow); border-radius: 16px; padding: 16px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 14px;
+}
+.prc-left { flex: 1; }
+.prc-title { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.prc-initial { font-size: 0.85rem; color: var(--text-secondary); }
+.prc-current { font-size: 1.6rem; font-weight: 900; }
+.prc-return { font-size: 0.9rem; font-weight: 700; padding: 3px 10px; border-radius: 8px; display: inline-block; margin-top: 4px; }
+.prc-return.up { background: var(--green-light); color: var(--green); }
+.prc-return.down { background: var(--red-light); color: var(--red); }
+.prc-input-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 110px; }
+.prc-input-label { font-size: 0.68rem; color: var(--text-muted); }
+.prc-input {
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; font-size: 0.85rem; color: var(--text); font-family: inherit;
+    outline: none; width: 110px;
+}
+.prc-input:focus { border-color: var(--accent); }
+
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.analytics-grid.days { grid-template-columns: repeat(7, 1fr); }
+.day-cell {
+    background: var(--bg-elevated); border-radius: 8px; padding: 6px 4px;
+    text-align: center; border: 1px solid var(--border);
+}
+.day-cell.best { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+.day-cell.worst { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.08); }
+.day-cell.neutral { opacity: 0.5; }
+.day-name { font-size: 0.62rem; color: var(--text-secondary); margin-bottom: 3px; }
+.day-pnl { font-size: 0.7rem; font-weight: 700; }
+.day-pnl.pos { color: var(--green); }
+.day-pnl.neg { color: var(--red); }
+.day-count { font-size: 0.6rem; color: var(--text-muted); }
+
+.time-buckets { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.time-bucket {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px; text-align: center;
+}
+.time-bucket.best-time { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+.tb-icon { font-size: 1.4rem; margin-bottom: 4px; }
+.tb-label { font-size: 0.72rem; color: var(--text-secondary); }
+.tb-pnl { font-size: 0.9rem; font-weight: 800; }
+.tb-count { font-size: 0.65rem; color: var(--text-muted); }
+
+.overtrade-bar {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+}
+.ot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ot-title { font-size: 0.82rem; font-weight: 700; }
+.ot-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 8px; font-weight: 600; }
+.ot-badge.ok { background: var(--green-light); color: var(--green); }
+.ot-badge.warn { background: var(--yellow-light); color: var(--yellow); }
+.ot-badge.bad { background: var(--red-light); color: var(--red); }
+.ot-track { display: flex; gap: 6px; flex-wrap: wrap; }
+.ot-day-dot {
+    font-size: 0.68rem; padding: 3px 8px; border-radius: 6px;
+    background: var(--bg-elevated); color: var(--text-secondary);
+}
+.ot-day-dot.ot { background: var(--red-light); color: var(--red); }
+
+
+/* ==================== NOTES ANALYSIS ==================== */
+.notes-analysis-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+}
+.keyword-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.kw-chip {
+    font-size: 0.72rem; padding: 4px 10px; border-radius: 20px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+}
+.kw-chip.win-kw { background: rgba(16,185,129,0.15); color: var(--green); }
+.kw-chip.loss-kw { background: rgba(239,68,68,0.15); color: var(--red); }
+.kw-chip.neutral-kw { background: rgba(99,102,241,0.12); color: var(--accent-light); }
+.kw-count { font-size: 0.65rem; opacity: 0.7; }
+.notes-search {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; font-size: 0.9rem;
+    color: var(--text); font-family: inherit; outline: none;
+    margin-bottom: 10px; transition: border-color 0.2s;
+}
+.notes-search:focus { border-color: var(--accent); }
+.notes-insight {
+    font-size: 0.78rem; padding: 10px 12px; border-radius: 10px;
+    line-height: 1.5; margin-top: 8px;
+}
+.notes-insight.positive { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: var(--green); }
+.notes-insight.negative { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+.notes-insight.info { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); color: var(--accent-light); }
+
     </style>
 </head>
 <body>
@@ -656,6 +852,35 @@ html, body {
                         </div>
                     </div>
 
+
+                    <!-- Live Prices -->
+                    <div class="section-title">מחירים בזמן אמת <span class="live-dot"></span></div>
+                    <div class="live-prices-grid">
+                        <div class="price-card btc">
+                            <div class="price-symbol">₿ BTC/USDT</div>
+                            <div class="price-value" id="btc-price">טוען...</div>
+                            <div><span class="price-change" id="btc-change" style="background:var(--bg-elevated);color:var(--text-muted);">--</span></div>
+                            <div class="price-refresh-time" id="btc-updated"></div>
+                        </div>
+                        <div class="price-card eth">
+                            <div class="price-symbol">Ξ ETH/USDT</div>
+                            <div class="price-value" id="eth-price">טוען...</div>
+                            <div><span class="price-change" id="eth-change" style="background:var(--bg-elevated);color:var(--text-muted);">--</span></div>
+                            <div class="price-refresh-time" id="eth-updated"></div>
+                        </div>
+                    </div>
+
+                    <!-- News (Tabbed) -->
+                    <div class="section-title">חדשות <span id="news-time" style="font-size:0.62rem;color:var(--text-muted);font-weight:400;letter-spacing:0;text-transform:none;"></span></div>
+                    <div class="news-tabs">
+                        <button class="news-tab active" onclick="switchNewsTab('crypto', this)">₿ קריפטו</button>
+                        <button class="news-tab" onclick="switchNewsTab('macro', this)">📊 מאקרו</button>
+                        <button class="news-tab" onclick="switchNewsTab('markets', this)">🌍 שווקים</button>
+                    </div>
+                    <div id="crypto-news-list" class="news-list">
+                        <div class="news-loading">⏳ טוען חדשות...</div>
+                    </div>
+
                     <!-- Market Sentiment Section -->
                     <div class="section-title">כלים ומשאבים חשובים</div>
                     <div class="resources-list">
@@ -712,6 +937,19 @@ html, body {
                         <button class="filter-btn" onclick="filterJournal('loss', this)">הפסד ❌</button>
                         <button class="filter-btn" onclick="filterJournal('open', this)">פתוח 🔄</button>
                     </div>
+
+                    <!-- Notes Search -->
+                    <input class="notes-search" type="text" id="notes-search"
+                        placeholder="🔍 חפש בהערות העסקאות..." oninput="filterByNotes(this.value)" style="display:none;">
+
+                    <!-- Journal Stats -->
+                    <div id="journal-stats-section"></div>
+
+                    <!-- Analytics -->
+                    <div id="journal-analytics-section"></div>
+
+                    <!-- Notes Analysis -->
+                    <div id="notes-analysis-section"></div>
 
                     <!-- Trades List -->
                     <div id="trades-list">
@@ -1179,11 +1417,15 @@ html, body {
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-field half">
+                    <div class="form-field third">
                         <label>תאריך כניסה</label>
                         <input type="date" id="trade-date">
                     </div>
-                    <div class="form-field half">
+                    <div class="form-field third">
+                        <label>שעת כניסה</label>
+                        <input type="time" id="trade-time" placeholder="09:30">
+                    </div>
+                    <div class="form-field third">
                         <label>אסטרטגיה</label>
                         <select id="trade-strategy">
                             <option value="day">סוחר יומי</option>
@@ -1195,17 +1437,29 @@ html, body {
                 <div class="form-row">
                     <div class="form-field third">
                         <label>כניסה ($)</label>
-                        <input type="number" id="trade-entry" placeholder="45000">
+                        <input type="number" id="trade-entry" placeholder="45000" oninput="updatePctHelpers()">
                     </div>
                     <div class="form-field third">
                         <label>סטופ ($)</label>
-                        <input type="number" id="trade-stop" placeholder="43000">
+                        <input type="number" id="trade-stop" placeholder="43000" oninput="updatePctHelpers()">
                     </div>
                     <div class="form-field third">
                         <label>יעד ($)</label>
-                        <input type="number" id="trade-target" placeholder="50000">
+                        <input type="number" id="trade-target" placeholder="50000" oninput="updatePctHelpers()">
                     </div>
                 </div>
+                <!-- PCT Helpers (auto-calculated) -->
+                <div class="pct-helpers" id="pct-helpers" style="display:none;">
+                    <div class="pct-helper-box">
+                        <div class="pct-helper-label">📉 סטופ לוס</div>
+                        <div class="pct-helper-val danger" id="stop-pct-display">--</div>
+                    </div>
+                    <div class="pct-helper-box">
+                        <div class="pct-helper-label">🎯 יעד רווח</div>
+                        <div class="pct-helper-val success" id="target-pct-display">--</div>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-field half">
                         <label>גודל פוזיציה ($)</label>
@@ -1237,12 +1491,45 @@ html, body {
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-field half">
+                        <label>סוג סגירה</label>
+                        <select id="trade-close-type" onchange="updateClosePctVisibility()">
+                            <option value="full">מלאה 100%</option>
+                            <option value="partial75">חלקית 75%</option>
+                            <option value="partial50">חלקית 50%</option>
+                            <option value="partial25">חלקית 25%</option>
+                            <option value="custom">מותאם אישית</option>
+                        </select>
+                    </div>
+                    <div class="form-field half" id="custom-pct-field" style="display:none;">
+                        <label>% סגירה מותאם</label>
+                        <input type="number" id="trade-close-pct" placeholder="50" min="1" max="100">
+                    </div>
+                </div>
                 <div class="form-field">
                     <label>הערות</label>
                     <textarea id="trade-notes" placeholder="סיבת הכניסה, הסטאפ, מה למדת..." rows="3"></textarea>
                 </div>
                 <input type="hidden" id="trade-edit-id" value="">
                 <button class="btn-primary" onclick="saveTrade()">שמור עסקה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Report Modal -->
+    <div class="report-modal-overlay" id="report-modal" onclick="if(event.target===this)closeReportModal()">
+        <div class="report-modal">
+            <div class="modal-header">
+                <h2>📊 דוח חודשי</h2>
+                <button class="modal-close" onclick="closeReportModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="report-month-label" style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;"></p>
+                <div class="stats-grid-2" id="report-summary-stats" style="margin-bottom:12px;"></div>
+                <div class="report-content" id="report-text"></div>
+                <button class="btn-primary" onclick="emailReport()">📧 שלח למייל</button>
+                <button class="btn-secondary" onclick="closeReportModal()">סגור</button>
             </div>
         </div>
     </div>
@@ -1287,11 +1574,22 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
     trades = getData('trades', []);
     fetchFearGreed();
+    fetchLivePrices();
+    fetchCryptoNews();
     showProfile('day');
     renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
+    renderNotesAnalysis();
     updateDashboardStats();
     setDefaultDate();
     calculateRisk();
+    checkMonthlyReportReminder();
+
+    // Auto-refresh intervals
+    setInterval(fetchFearGreed, 5 * 60 * 1000);       // every 5 min
+    setInterval(fetchLivePrices, 60 * 1000);           // every 60 sec
+    setInterval(fetchCryptoNews, 10 * 60 * 1000);      // every 10 min
 }
 
 // ==================== FEAR & GREED INDEX ====================
@@ -1488,8 +1786,13 @@ function openAddTrade() {
     document.getElementById('trade-leverage').value = '1';
     document.getElementById('trade-strategy').value = 'swing';
     document.getElementById('trade-status').value = 'open';
+    document.getElementById('trade-close-type').value = 'full';
+    document.getElementById('custom-pct-field').style.display = 'none';
+    updatePctHelpers();
     setDirection('long');
     setDefaultDate();
+    const nowT = new Date();
+    document.getElementById('trade-time').value = nowT.toTimeString().slice(0,5);
     document.getElementById('trade-modal').classList.add('show');
 }
 
@@ -1519,6 +1822,13 @@ function saveTrade() {
     const notes = document.getElementById('trade-notes').value.trim();
     const date = document.getElementById('trade-date').value;
     const strategy = document.getElementById('trade-strategy').value;
+    const tradeTime = document.getElementById('trade-time').value || '';
+    const closeTypeRaw = document.getElementById('trade-close-type').value;
+    const closeType = closeTypeRaw;
+    const closePctMap = { full: 100, partial75: 75, partial50: 50, partial25: 25 };
+    const closePct = closeTypeRaw === 'custom'
+        ? (parseFloat(document.getElementById('trade-close-pct').value) || 100)
+        : (closePctMap[closeTypeRaw] || 100);
 
     // Calculate P&L
     let pnl = 0;
@@ -1526,7 +1836,7 @@ function saveTrade() {
         const priceChange = tradeDirection === 'long'
             ? (exit - entry) / entry
             : (entry - exit) / entry;
-        pnl = size * priceChange * leverage;
+        pnl = size * priceChange * leverage * (closePct / 100);
     }
 
     // Calculate R:R
@@ -1541,7 +1851,8 @@ function saveTrade() {
     const trade = {
         id: editId || Date.now().toString(),
         pair, direction: tradeDirection, entry, stop, target, exit: isNaN(exit) ? null : exit,
-        size: isNaN(size) ? null : size, leverage, status, notes, date, strategy,
+        size: isNaN(size) ? null : size, leverage, status, notes, date, time: tradeTime, strategy,
+        closePct, closeType,
         pnl: Math.round(pnl * 100) / 100, rr: Math.round(rr * 100) / 100
     };
 
@@ -1555,6 +1866,9 @@ function saveTrade() {
     setData('trades', trades);
     closeTradeModal();
     renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
+    renderNotesAnalysis();
     updateDashboardStats();
     showToast('✅ עסקה נשמרה!');
 }
@@ -1576,7 +1890,16 @@ function editTrade(id) {
     document.getElementById('trade-status').value = trade.status || 'open';
     document.getElementById('trade-notes').value = trade.notes || '';
     document.getElementById('trade-date').value = trade.date || '';
+    document.getElementById('trade-time').value = trade.time || '';
+    document.getElementById('trade-close-type').value = trade.closeType || 'full';
+    if (trade.closeType === 'custom') {
+        document.getElementById('custom-pct-field').style.display = 'block';
+        document.getElementById('trade-close-pct').value = trade.closePct || 100;
+    } else {
+        document.getElementById('custom-pct-field').style.display = 'none';
+    }
     setDirection(trade.direction || 'long');
+    updatePctHelpers();
     document.getElementById('trade-modal').classList.add('show');
 }
 
@@ -1585,6 +1908,9 @@ function deleteTrade(id) {
     trades = trades.filter(t => t.id !== id);
     setData('trades', trades);
     renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
+    renderNotesAnalysis();
     updateDashboardStats();
     showToast('🗑️ עסקה נמחקה');
 }
@@ -1594,6 +1920,8 @@ function filterJournal(filter, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
 }
 
 function renderTradesList() {
@@ -1603,6 +1931,15 @@ function renderTradesList() {
     if (journalFilter !== 'all') {
         filtered = filtered.filter(t => t.status === journalFilter);
     }
+    if (typeof notesSearchQuery !== 'undefined' && notesSearchQuery) {
+        filtered = filtered.filter(t =>
+            (t.notes || '').toLowerCase().includes(notesSearchQuery) ||
+            (t.pair || '').toLowerCase().includes(notesSearchQuery)
+        );
+    }
+
+    const searchEl = document.getElementById('notes-search');
+    if (searchEl) searchEl.style.display = trades.length > 0 ? 'block' : 'none';
 
     if (filtered.length === 0) {
         const msg = journalFilter === 'all'
@@ -1646,7 +1983,7 @@ function renderTradesList() {
             <div class="tc-pnl">
                 <div>
                     <div class="tc-meta">${trade.date || ''} | ${strategyLabels[trade.strategy] || ''} | R:R ${trade.rr || 0}:1</div>
-                    ${trade.size ? `<div class="tc-meta">גודל: $${trade.size.toLocaleString()}</div>` : ''}
+                    ${trade.size ? `<div class="tc-meta">גודל: $${trade.size.toLocaleString()}${trade.closePct && trade.closePct < 100 ? ` | <span class="tc-close-type">סגור ${trade.closePct}%</span>` : ''}</div>` : ''}
                 </div>
                 <div class="tc-pnl-val ${pnlClass}">${pnlText}</div>
             </div>
@@ -1880,6 +2217,683 @@ function showToast(msg) {
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
 }
+
+
+// ==================== LIVE PRICES ====================
+async function fetchLivePrices() {
+    try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&precision=0');
+        const data = await res.json();
+        const now = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+
+        if (data.bitcoin) {
+            const p = data.bitcoin.usd;
+            const ch = data.bitcoin.usd_24h_change || 0;
+            document.getElementById('btc-price').textContent = '$' + Number(p).toLocaleString('en-US');
+            const el = document.getElementById('btc-change');
+            el.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+            el.className = 'price-change ' + (ch >= 0 ? 'up' : 'down');
+            document.getElementById('btc-updated').textContent = 'עודכן ' + now;
+        }
+        if (data.ethereum) {
+            const p = data.ethereum.usd;
+            const ch = data.ethereum.usd_24h_change || 0;
+            document.getElementById('eth-price').textContent = '$' + Number(p).toLocaleString('en-US');
+            const el = document.getElementById('eth-change');
+            el.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+            el.className = 'price-change ' + (ch >= 0 ? 'up' : 'down');
+            document.getElementById('eth-updated').textContent = 'עודכן ' + now;
+        }
+    } catch (e) { /* silent fail */ }
+}
+
+// ==================== CRYPTO NEWS ====================
+async function fetchCryptoNews() {
+    try {
+        const rssUrl = encodeURIComponent('https://cointelegraph.com/rss');
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl + '&count=6');
+        const data = await res.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+            renderNewsItems(data.items);
+            const now = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+            const el = document.getElementById('news-time');
+            if (el) el.textContent = '• עודכן ' + now;
+        } else { throw new Error('no items'); }
+    } catch (e) {
+        try {
+            // fallback: CoinDesk RSS
+            const rssUrl2 = encodeURIComponent('https://www.coindesk.com/arc/outboundfeeds/rss/');
+            const res2 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl2 + '&count=6');
+            const data2 = await res2.json();
+            if (data2.status === 'ok' && data2.items) {
+                renderNewsItems(data2.items);
+            } else { throw new Error('fallback failed'); }
+        } catch (e2) {
+            document.getElementById('crypto-news-list').innerHTML =
+                '<div class="news-loading">⚠️ לא ניתן לטעון חדשות כרגע</div>';
+        }
+    }
+}
+
+function renderNewsItems(items) {
+    const container = document.getElementById('crypto-news-list');
+    if (!container) return;
+    const icons = ['📰','🔥','💡','🚀','⚡','🌐'];
+    container.innerHTML = items.slice(0, 6).map((item, i) => {
+        const title = (item.title || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const link = item.link || '#';
+        const date = item.pubDate
+            ? new Date(item.pubDate).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+            : '';
+        return `<a href="${link}" target="_blank" class="news-item">
+            <div class="news-bullet">${icons[i % icons.length]}</div>
+            <div class="news-content">
+                <div class="news-title">${title}</div>
+                <div class="news-meta">${date} • CoinTelegraph</div>
+            </div>
+        </a>`;
+    }).join('');
+}
+
+// ==================== RISK FEEDBACK ====================
+function getRiskFeedback(trade) {
+    const fb = [];
+    if (!trade.stop || isNaN(trade.stop) || Number(trade.stop) === 0) {
+        fb.push({ type: 'bad', text: '❌ אין סטופ לוס' });
+    } else {
+        fb.push({ type: 'good', text: '✅ יש סטופ לוס' });
+    }
+    if (trade.rr) {
+        const rr = Number(trade.rr);
+        if (rr < 1)       fb.push({ type: 'bad',  text: `❌ R:R ${rr}:1 גרוע` });
+        else if (rr < 2)  fb.push({ type: 'warn', text: `⚠️ R:R ${rr}:1 בינוני` });
+        else if (rr < 3)  fb.push({ type: 'good', text: `✅ R:R ${rr}:1 טוב` });
+        else              fb.push({ type: 'good', text: `🌟 R:R ${rr}:1 מצוין` });
+    }
+    const lev = Number(trade.leverage) || 1;
+    if (lev > 10)     fb.push({ type: 'bad',  text: `❌ מינוף ${lev}x מסוכן` });
+    else if (lev > 5) fb.push({ type: 'warn', text: `⚠️ מינוף ${lev}x גבוה` });
+    else if (lev > 1) fb.push({ type: 'info', text: `ℹ️ מינוף ${lev}x` });
+    if (trade.strategy === 'investor' && lev > 1)
+        fb.push({ type: 'warn', text: '⚠️ משקיע לא צריך מינוף' });
+    return fb;
+}
+
+function renderRiskFeedback(trade) {
+    const fb = getRiskFeedback(trade);
+    if (!fb.length) return '';
+    const badges = fb.map(f => `<span class="rf-badge ${f.type}">${f.text}</span>`).join('');
+    return `<div class="risk-feedback"><div class="rf-title">ניהול סיכונים</div>${badges}</div>`;
+}
+
+// ==================== DETAILED STATS ====================
+function calcDetailedStats() {
+    const closed = trades.filter(t => t.status !== 'open');
+    const wins   = closed.filter(t => t.status === 'win');
+    const losses = closed.filter(t => t.status === 'loss');
+    const totalWin  = wins.reduce((s, t) => s + (t.pnl || 0), 0);
+    const totalLoss = losses.reduce((s, t) => s + Math.abs(t.pnl || 0), 0);
+    const profitFactor = totalLoss > 0 ? totalWin / totalLoss : (totalWin > 0 ? 99 : 0);
+    const avgWin  = wins.length   > 0 ? totalWin  / wins.length   : 0;
+    const avgLoss = losses.length > 0 ? totalLoss / losses.length : 0;
+
+    let bestStreak = 0, worstStreak = 0, curStreak = 0;
+    [...closed].reverse().forEach(t => {
+        if (t.status === 'win') {
+            curStreak = curStreak > 0 ? curStreak + 1 : 1;
+            if (curStreak > bestStreak) bestStreak = curStreak;
+        } else if (t.status === 'loss') {
+            curStreak = curStreak < 0 ? curStreak - 1 : -1;
+            if (Math.abs(curStreak) > worstStreak) worstStreak = Math.abs(curStreak);
+        } else { curStreak = 0; }
+    });
+
+    const withRR = trades.filter(t => t.rr > 0);
+    const avgRR  = withRR.length > 0 ? withRR.reduce((s, t) => s + t.rr, 0) / withRR.length : 0;
+    const pairCount = {};
+    trades.forEach(t => { pairCount[t.pair] = (pairCount[t.pair] || 0) + 1; });
+    const topPair = Object.entries(pairCount).sort((a, b) => b[1] - a[1])[0];
+
+    return { total: trades.length, wins: wins.length, losses: losses.length,
+        winRate: closed.length > 0 ? Math.round(wins.length / closed.length * 100) : 0,
+        totalPnl: closed.reduce((s, t) => s + (t.pnl || 0), 0),
+        profitFactor, avgWin, avgLoss, bestStreak, worstStreak, avgRR,
+        topPair: topPair ? topPair[0] : '--' };
+}
+
+function renderDetailedStats() {
+    const section = document.getElementById('journal-stats-section');
+    if (!section) return;
+    if (trades.length === 0) { section.innerHTML = ''; return; }
+    const s = calcDetailedStats();
+    const pfColor = s.profitFactor >= 1.5 ? 'var(--green)' : s.profitFactor >= 1 ? 'var(--yellow)' : 'var(--red)';
+    section.innerHTML = `
+        <div class="stats-detail-card">
+            <div class="strategy-block-title">סטטיסטיקות מפורטות</div>
+            <div class="stats-grid-2">
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:${pfColor}">${s.profitFactor >= 99 ? '∞' : s.profitFactor.toFixed(2)}</div>
+                    <div class="stat-item-label">Profit Factor</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:var(--accent-light)">${s.avgRR.toFixed(1)}:1</div>
+                    <div class="stat-item-label">ממוצע R:R</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:var(--green)">+$${s.avgWin.toFixed(0)}</div>
+                    <div class="stat-item-label">ממוצע רווח</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:var(--red)">-$${s.avgLoss.toFixed(0)}</div>
+                    <div class="stat-item-label">ממוצע הפסד</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:var(--green)">🔥 ${s.bestStreak}</div>
+                    <div class="stat-item-label">רצף רווחים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-val" style="color:var(--red)">💔 ${s.worstStreak}</div>
+                    <div class="stat-item-label">רצף הפסדים</div>
+                </div>
+            </div>
+            <div style="margin-top:10px;padding:10px;background:var(--bg);border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <span style="font-size:0.78rem;color:var(--text-secondary)">זוג מוביל: <strong style="color:var(--text)">${s.topPair}</strong></span>
+                <button onclick="showMonthlyReport()" style="background:rgba(99,102,241,0.2);border:1px solid var(--accent);color:var(--accent-light);padding:6px 12px;border-radius:8px;font-size:0.78rem;font-family:inherit;cursor:pointer;font-weight:600;">📊 דוח חודשי</button>
+            </div>
+        </div>
+    `;
+}
+
+// ==================== MONTHLY REPORT ====================
+function getMonthlyStats(year, month) {
+    const mt = trades.filter(t => {
+        if (!t.date) return false;
+        const d = new Date(t.date);
+        return d.getFullYear() === year && d.getMonth() === month;
+    });
+    const closed = mt.filter(t => t.status !== 'open');
+    const wins   = closed.filter(t => t.status === 'win');
+    const losses = closed.filter(t => t.status === 'loss');
+    const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate  = closed.length > 0 ? Math.round(wins.length / closed.length * 100) : 0;
+    const best  = closed.reduce((b, t) => (!b || (t.pnl||0) > (b.pnl||0)) ? t : b, null);
+    const worst = closed.reduce((w, t) => (!w || (t.pnl||0) < (w.pnl||0)) ? t : w, null);
+    return { monthTrades: mt, closed, wins, losses, totalPnl, winRate, bestTrade: best, worstTrade: worst };
+}
+
+function showMonthlyReport(year, month) {
+    const now = new Date();
+    const y = year  !== undefined ? year  : now.getFullYear();
+    const m = month !== undefined ? month : now.getMonth();
+    const months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    const s = getMonthlyStats(y, m);
+
+    document.getElementById('report-month-label').textContent = `דוח ${months[m]} ${y}`;
+    document.getElementById('report-summary-stats').innerHTML = `
+        <div class="stat-item">
+            <div class="stat-item-val">${s.closed.length}</div>
+            <div class="stat-item-label">עסקאות</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-item-val" style="color:${s.winRate>=50?'var(--green)':'var(--red)'}">${s.winRate}%</div>
+            <div class="stat-item-label">הצלחה</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-item-val" style="color:${s.totalPnl>=0?'var(--green)':'var(--red)'}">${s.totalPnl>=0?'+':''}$${Math.abs(s.totalPnl).toFixed(0)}</div>
+            <div class="stat-item-label">רווח/הפסד</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-item-val">${s.wins.length}✅ ${s.losses.length}❌</div>
+            <div class="stat-item-label">רווח / הפסד</div>
+        </div>
+    `;
+
+    let rpt = `📊 דוח מסחר חודשי - ${months[m]} ${y}\n`;
+    rpt += `${'─'.repeat(36)}\n\n`;
+    rpt += `📈 סיכום ביצועים:\n`;
+    rpt += `  • עסקאות סה"כ: ${s.monthTrades.length} (${s.closed.length} סגורות)\n`;
+    rpt += `  • אחוז הצלחה: ${s.winRate}%\n`;
+    rpt += `  • רווחים: ${s.wins.length}   הפסדים: ${s.losses.length}\n`;
+    rpt += `  • סה"כ רווח/הפסד: ${s.totalPnl>=0?'+':''}$${s.totalPnl.toFixed(2)}\n\n`;
+    if (s.bestTrade && (s.bestTrade.pnl||0) > 0) {
+        rpt += `🏆 עסקה הטובה ביותר:\n`;
+        rpt += `  • ${s.bestTrade.pair} ${s.bestTrade.direction==='long'?'📈':'📉'}: +$${(s.bestTrade.pnl||0).toFixed(2)}\n\n`;
+    }
+    if (s.worstTrade && (s.worstTrade.pnl||0) < 0) {
+        rpt += `⚠️ עסקה הגרועה ביותר:\n`;
+        rpt += `  • ${s.worstTrade.pair} ${s.worstTrade.direction==='long'?'📈':'📉'}: -$${Math.abs(s.worstTrade.pnl||0).toFixed(2)}\n\n`;
+    }
+    if (s.closed.length > 0) {
+        rpt += `📋 פירוט עסקאות:\n`;
+        s.closed.forEach((t, i) => {
+            const ic = t.status==='win'?'✅':t.status==='loss'?'❌':'➖';
+            rpt += `  ${i+1}. ${ic} ${t.pair} (${t.date||''}): ${(t.pnl||0)>=0?'+':''}$${(t.pnl||0).toFixed(2)}\n`;
+        });
+    }
+    rpt += `\n${'─'.repeat(36)}\n`;
+    rpt += `נוצר ע"י CryptoEdge`;
+
+    document.getElementById('report-text').textContent = rpt;
+    window._rptText  = rpt;
+    window._rptMonth = `${months[m]} ${y}`;
+    document.getElementById('report-modal').classList.add('show');
+}
+
+function closeReportModal() { document.getElementById('report-modal').classList.remove('show'); }
+
+function emailReport() {
+    const subj = encodeURIComponent(`דוח מסחר חודשי CryptoEdge - ${window._rptMonth||''}`);
+    const body = encodeURIComponent(window._rptText||'');
+    window.location.href = `mailto:?subject=${subj}&body=${body}`;
+}
+
+function checkMonthlyReportReminder() {
+    const now = new Date();
+    if (now.getDate() !== 1 || trades.length === 0) return;
+    const key = `${now.getFullYear()}-${now.getMonth()}`;
+    if (getData('last_report_shown', '') === key) return;
+    const pm = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+    const py = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+    const ps = getMonthlyStats(py, pm);
+    if (ps.closed.length > 0) {
+        setData('last_report_shown', key);
+        setTimeout(() => showMonthlyReport(py, pm), 2800);
+    }
+}
+
+
+// ==================== NEWS TABS ====================
+let newsCache = { crypto: null, macro: null, markets: null };
+let activeNewsTab = 'crypto';
+
+function switchNewsTab(tab, btn) {
+    activeNewsTab = tab;
+    document.querySelectorAll('.news-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const container = document.getElementById('crypto-news-list');
+    if (newsCache[tab]) {
+        renderNewsItems(newsCache[tab], getNewsSource(tab));
+    } else {
+        container.innerHTML = '<div class="news-loading">⏳ טוען...</div>';
+        fetchNewsForTab(tab);
+    }
+}
+
+function getNewsSource(tab) {
+    return { crypto: 'CoinTelegraph', macro: 'MarketWatch', markets: 'Reuters' }[tab] || '';
+}
+
+async function fetchNewsForTab(tab) {
+    const feeds = {
+        crypto:  'https://cointelegraph.com/rss',
+        macro:   'https://feeds.marketwatch.com/marketwatch/topstories/',
+        markets: 'https://feeds.content.dowjones.io/public/rss/mw_topstories'
+    };
+    const fallbacks = {
+        macro:   'https://www.cnbc.com/id/10000664/device/rss/rss.html',
+        markets: 'https://finance.yahoo.com/news/rssindex'
+    };
+    try {
+        const url = encodeURIComponent(feeds[tab]);
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + url + '&count=6');
+        const data = await res.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+            newsCache[tab] = data.items;
+            if (activeNewsTab === tab) renderNewsItems(data.items, getNewsSource(tab));
+            return;
+        }
+        throw new Error('empty');
+    } catch(e) {
+        if (fallbacks[tab]) {
+            try {
+                const url2 = encodeURIComponent(fallbacks[tab]);
+                const res2 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + url2 + '&count=6');
+                const data2 = await res2.json();
+                if (data2.status === 'ok' && data2.items && data2.items.length > 0) {
+                    newsCache[tab] = data2.items;
+                    if (activeNewsTab === tab) renderNewsItems(data2.items, getNewsSource(tab));
+                    return;
+                }
+            } catch(e2) {}
+        }
+        if (activeNewsTab === tab)
+            document.getElementById('crypto-news-list').innerHTML = '<div class="news-loading">⚠️ לא ניתן לטעון</div>';
+    }
+}
+
+async function fetchCryptoNews() {
+    const now = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('news-time').textContent = '• ' + now;
+    // Reset cache and fetch all tabs
+    newsCache = { crypto: null, macro: null, markets: null };
+    fetchNewsForTab('crypto');
+    fetchNewsForTab('macro');
+    fetchNewsForTab('markets');
+}
+
+// ==================== FORM HELPERS ====================
+function updateClosePctVisibility() {
+    const val = document.getElementById('trade-close-type').value;
+    document.getElementById('custom-pct-field').style.display = val === 'custom' ? 'block' : 'none';
+}
+
+function updatePctHelpers() {
+    const entry  = parseFloat(document.getElementById('trade-entry')?.value);
+    const stop   = parseFloat(document.getElementById('trade-stop')?.value);
+    const target = parseFloat(document.getElementById('trade-target')?.value);
+    const box = document.getElementById('pct-helpers');
+    if (!box) return;
+
+    if (entry && (stop || target)) {
+        box.style.display = 'grid';
+        if (entry && stop) {
+            const pct = ((stop - entry) / entry * 100).toFixed(2);
+            document.getElementById('stop-pct-display').textContent = pct + '% מהכניסה';
+        }
+        if (entry && target) {
+            const pct = ((target - entry) / entry * 100).toFixed(2);
+            document.getElementById('target-pct-display').textContent = '+' + pct + '% מהכניסה';
+        }
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+
+// ==================== PORTFOLIO ROI ====================
+function getPortfolioData() {
+    const initial = parseFloat(getData('portfolio_initial', 0)) || 0;
+    const closed = trades.filter(t => t.status !== 'open');
+    const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
+    const current = initial > 0 ? initial + totalPnl : 0;
+    const returnPct = initial > 0 ? (totalPnl / initial * 100) : 0;
+    return { initial, current, totalPnl, returnPct };
+}
+
+function setPortfolioInitial(val) {
+    const v = parseFloat(val);
+    if (!isNaN(v) && v > 0) {
+        setData('portfolio_initial', v);
+        renderDetailedStats();
+        renderAnalytics();
+        updateDashboardStats();
+    }
+}
+
+// ==================== ANALYTICS RENDER ====================
+function renderAnalytics() {
+    const section = document.getElementById('journal-analytics-section');
+    if (!section || trades.length === 0) {
+        if (section) section.innerHTML = '';
+        return;
+    }
+
+    const port = getPortfolioData();
+    const dayData = calcDayOfWeekStats();
+    const timeData = calcTimeOfDayStats();
+    const otData = calcOvertradingStats();
+
+    const hebrewDays = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+    const dayNames   = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+    // Find best/worst day
+    const activeDays = dayData.filter(d => d.count > 0);
+    let bestDayIdx = -1, worstDayIdx = -1;
+    if (activeDays.length > 0) {
+        bestDayIdx  = dayData.indexOf(activeDays.reduce((b, d) => d.avgPnl > b.avgPnl ? d : b));
+        worstDayIdx = dayData.indexOf(activeDays.reduce((w, d) => d.avgPnl < w.avgPnl ? d : w));
+    }
+
+    // Find best time bucket
+    const timeBuckets = ['🌅 בוקר<br><small>06-12</small>', '☀️ צהריים<br><small>12-17</small>', '🌙 ערב<br><small>17-24</small>'];
+    const bestTimeIdx = timeData.reduce((bi, d, i) => d.avgPnl > (timeData[bi]?.avgPnl || -Infinity) ? i : bi, 0);
+
+    // Portfolio ROI card
+    const portHtml = `
+        <div class="portfolio-roi-card">
+            <div class="prc-left">
+                <div class="prc-title">ביצועי תיק</div>
+                ${port.initial > 0 ? `
+                    <div class="prc-initial">התחלה: $${Number(port.initial).toLocaleString()}</div>
+                    <div class="prc-current" style="color:${port.totalPnl>=0?'var(--green)':'var(--red)'}">$${Number(port.current).toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+                    <span class="prc-return ${port.returnPct>=0?'up':'down'}">${port.returnPct>=0?'+':''}${port.returnPct.toFixed(2)}%</span>
+                ` : `<div class="prc-current" style="color:var(--text-muted);">הגדר שווי תיק</div>`}
+            </div>
+            <div class="prc-input-wrap">
+                <div class="prc-input-label">שווי תיק ($)</div>
+                <input class="prc-input" type="number" placeholder="10000"
+                    value="${port.initial > 0 ? port.initial : ''}"
+                    onchange="setPortfolioInitial(this.value)">
+            </div>
+        </div>`;
+
+    // Day of week grid
+    const dayHtml = `
+        <div class="section-title" style="margin-top:14px;">ביצועים לפי יום בשבוע</div>
+        <div class="analytics-grid days">
+            ${dayData.map((d, i) => {
+                const cls = d.count === 0 ? 'neutral' : i === bestDayIdx ? 'best' : i === worstDayIdx ? 'worst' : '';
+                const pnlStr = d.count > 0 ? (d.avgPnl >= 0 ? '+$'+d.avgPnl.toFixed(0) : '-$'+Math.abs(d.avgPnl).toFixed(0)) : '--';
+                const pnlCls = d.avgPnl >= 0 ? 'pos' : 'neg';
+                return `<div class="day-cell ${cls}">
+                    <div class="day-name">${hebrewDays[i]}</div>
+                    <div class="day-pnl ${pnlCls}">${pnlStr}</div>
+                    <div class="day-count">${d.count > 0 ? d.winRate+'%' : ''}</div>
+                </div>`;
+            }).join('')}
+        </div>`;
+
+    // Time of day buckets
+    const timeHtml = `
+        <div class="section-title">ביצועים לפי שעה</div>
+        <div class="time-buckets">
+            ${timeData.map((d, i) => {
+                const cls = d.count > 0 && i === bestTimeIdx ? 'best-time' : '';
+                return `<div class="time-bucket ${cls}">
+                    <div class="tb-icon">${['🌅','☀️','🌙'][i]}</div>
+                    <div class="tb-label">${['בוקר 06-12','צהריים 12-17','ערב 17-24'][i]}</div>
+                    <div class="tb-pnl" style="color:${d.avgPnl>=0?'var(--green)':'var(--red)'}">
+                        ${d.count > 0 ? (d.avgPnl>=0?'+$':'-$')+Math.abs(d.avgPnl).toFixed(0) : '--'}
+                    </div>
+                    <div class="tb-count">${d.count > 0 ? d.count+' עסקאות | '+d.winRate+'%' : 'אין נתונים'}</div>
+                </div>`;
+            }).join('')}
+        </div>`;
+
+    // Overtrading
+    const otStatus = otData.maxDay <= 2 ? { cls: 'ok', txt: '✅ מסחר מאוזן' }
+                   : otData.maxDay <= 4 ? { cls: 'warn', txt: '⚠️ קרוב לגבול' }
+                   : { cls: 'bad', txt: '❌ מסחר יתר!' };
+    const otDots = otData.topDays.map(d =>
+        `<span class="ot-day-dot ${d.count > 3 ? 'ot' : ''}">${d.date}: ${d.count} עסקאות</span>`
+    ).join('');
+    const otHtml = `
+        <div class="overtrade-bar">
+            <div class="ot-header">
+                <span class="ot-title">🔄 ניטור מסחר יתר</span>
+                <span class="ot-badge ${otStatus.cls}">${otStatus.txt}</span>
+            </div>
+            <div class="ot-track">
+                ${otDots || '<span style="font-size:0.78rem;color:var(--text-muted);">אין נתונים עדיין</span>'}
+            </div>
+            ${otData.maxDay > 3 ? `<div style="margin-top:8px;font-size:0.75rem;color:var(--yellow);">⚠️ מקסימום 3 עסקאות ביום לניהול סיכונים מיטבי</div>` : ''}
+        </div>`;
+
+    section.innerHTML = `
+        <div class="analytics-section">
+            <div class="section-title" style="margin-top:4px;">📊 ניתוח ביצועים</div>
+            ${portHtml}
+            ${dayHtml}
+            ${timeHtml}
+            ${otHtml}
+        </div>`;
+}
+
+function calcDayOfWeekStats() {
+    const days = Array.from({length:7}, () => ({ count:0, wins:0, totalPnl:0, avgPnl:0, winRate:0 }));
+    const closed = trades.filter(t => t.status !== 'open' && t.date);
+    closed.forEach(t => {
+        const d = new Date(t.date).getDay(); // 0=Sun
+        days[d].count++;
+        if (t.status === 'win') days[d].wins++;
+        days[d].totalPnl += (t.pnl || 0);
+    });
+    days.forEach(d => {
+        if (d.count > 0) {
+            d.avgPnl  = d.totalPnl / d.count;
+            d.winRate = Math.round(d.wins / d.count * 100);
+        }
+    });
+    return days;
+}
+
+function calcTimeOfDayStats() {
+    // Buckets: 0=morning(6-12), 1=afternoon(12-17), 2=evening(17-24)
+    const buckets = Array.from({length:3}, () => ({ count:0, wins:0, totalPnl:0, avgPnl:0, winRate:0 }));
+    const closed = trades.filter(t => t.status !== 'open' && t.time);
+    closed.forEach(t => {
+        const hour = parseInt((t.time || '12:00').split(':')[0]);
+        const bi = hour < 12 ? 0 : hour < 17 ? 1 : 2;
+        buckets[bi].count++;
+        if (t.status === 'win') buckets[bi].wins++;
+        buckets[bi].totalPnl += (t.pnl || 0);
+    });
+    buckets.forEach(b => {
+        if (b.count > 0) {
+            b.avgPnl  = b.totalPnl / b.count;
+            b.winRate = Math.round(b.wins / b.count * 100);
+        }
+    });
+    return buckets;
+}
+
+function calcOvertradingStats() {
+    const dayCount = {};
+    trades.forEach(t => {
+        if (t.date) dayCount[t.date] = (dayCount[t.date] || 0) + 1;
+    });
+    const entries = Object.entries(dayCount).map(([date, count]) => ({ date, count }));
+    entries.sort((a, b) => b.count - a.count);
+    const maxDay = entries.length > 0 ? entries[0].count : 0;
+    return { maxDay, topDays: entries.slice(0, 5) };
+}
+
+
+// ==================== NOTES ANALYSIS ====================
+const STOP_WORDS_HE = new Set(['את','של','על','עם','אל','לא','כי','זה','הוא','היא','הם','הן','אני','אתה','אנחנו','יש','אין','גם','רק','כבר','אחרי','לפני','כן','לו','לה','בו','בה','כל','מה','שם','בין','עד','מי','אם','או','כך','כן','ב','ל','מ','ו','ה','ש','כ']);
+
+function extractKeywords(text) {
+    if (!text) return [];
+    return text.toLowerCase()
+        .replace(/[.,!?;:()\[\]"']/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !STOP_WORDS_HE.has(w));
+}
+
+function calcKeywordStats() {
+    const winWords = {}, lossWords = {}, allWords = {};
+    trades.forEach(t => {
+        if (!t.notes) return;
+        const words = extractKeywords(t.notes);
+        words.forEach(w => {
+            allWords[w] = (allWords[w] || 0) + 1;
+            if (t.status === 'win')  winWords[w]  = (winWords[w]  || 0) + 1;
+            if (t.status === 'loss') lossWords[w] = (lossWords[w] || 0) + 1;
+        });
+    });
+
+    // Score each word: how much more it appears in wins vs losses
+    const winCount  = trades.filter(t => t.status === 'win').length  || 1;
+    const lossCount = trades.filter(t => t.status === 'loss').length || 1;
+
+    const scored = Object.entries(allWords)
+        .filter(([, cnt]) => cnt >= 1)
+        .map(([w, cnt]) => {
+            const wRate = (winWords[w]  || 0) / winCount;
+            const lRate = (lossWords[w] || 0) / lossCount;
+            return { w, cnt, wRate, lRate, score: wRate - lRate };
+        });
+
+    const winKw  = [...scored].sort((a, b) => b.score - a.score).slice(0, 7);
+    const lossKw = [...scored].sort((a, b) => a.score - b.score).slice(0, 7);
+    const topAll = [...scored].sort((a, b) => b.cnt - a.cnt).slice(0, 8);
+
+    return { winKw, lossKw, topAll };
+}
+
+function renderNotesAnalysis() {
+    const section = document.getElementById('notes-analysis-section');
+    if (!section) return;
+
+    const tradesWithNotes = trades.filter(t => t.notes && t.notes.trim().length > 0);
+    if (tradesWithNotes.length < 2) {
+        section.innerHTML = '';
+        return;
+    }
+
+    const { winKw, lossKw, topAll } = calcKeywordStats();
+    const closedWithNotes = trades.filter(t => t.status !== 'open' && t.notes);
+
+    // Build insights
+    const insights = [];
+    if (winKw.length > 0 && winKw[0].score > 0.1) {
+        insights.push({ type: 'positive', text: `💡 המילה "${winKw[0].w}" מופיעה הכי הרבה בעסקאות מנצחות` });
+    }
+    if (lossKw.length > 0 && lossKw[0].score < -0.1) {
+        insights.push({ type: 'negative', text: `⚠️ המילה "${lossKw[0].w}" מופיעה הכי הרבה בעסקאות מפסידות` });
+    }
+
+    // Strategy keyword analysis
+    const setupWords = ['rsi','macd','ema','support','resistance','breakout','pullback','dca','range','trend','engulfing','divergence','consolidation','fibonacci','fib','volume','momentum'];
+    const foundSetups = topAll.filter(k => setupWords.includes(k.w.toLowerCase()));
+    if (foundSetups.length > 0) {
+        insights.push({ type: 'info', text: `📊 סטאפ נפוץ: ${foundSetups.slice(0,3).map(k => k.w).join(', ')}` });
+    }
+
+    const insightsHtml = insights.map(ins =>
+        `<div class="notes-insight ${ins.type}">${ins.text}</div>`
+    ).join('');
+
+    const winChips = winKw.filter(k => k.cnt > 0).map(k =>
+        `<span class="kw-chip win-kw">${k.w} <span class="kw-count">${Math.round(k.wRate*100)}%✅</span></span>`
+    ).join('');
+
+    const lossChips = lossKw.filter(k => k.cnt > 0 && k.score < 0).map(k =>
+        `<span class="kw-chip loss-kw">${k.w} <span class="kw-count">${Math.round(k.lRate*100)}%❌</span></span>`
+    ).join('');
+
+    const allChips = topAll.map(k =>
+        `<span class="kw-chip neutral-kw">${k.w} <span class="kw-count">${k.cnt}</span></span>`
+    ).join('');
+
+    section.innerHTML = `
+        <div class="strategy-block-title" style="margin-top:16px;margin-bottom:10px;">🧠 ניתוח הערות וסטאפים</div>
+        <div class="notes-analysis-card">
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:6px;">מילות מפתח בעסקאות <strong style="color:var(--green);">מנצחות</strong></div>
+            <div class="keyword-row">${winChips || '<span style="color:var(--text-muted);font-size:0.75rem;">אין מספיק נתונים</span>'}</div>
+        </div>
+        <div class="notes-analysis-card">
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:6px;">מילות מפתח בעסקאות <strong style="color:var(--red);">מפסידות</strong></div>
+            <div class="keyword-row">${lossChips || '<span style="color:var(--text-muted);font-size:0.75rem;">אין מספיק נתונים</span>'}</div>
+        </div>
+        <div class="notes-analysis-card">
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:6px;">📋 כל המילים הנפוצות</div>
+            <div class="keyword-row">${allChips}</div>
+        </div>
+        ${insightsHtml}
+    `;
+}
+
+// ==================== NOTES SEARCH / FILTER ====================
+let notesSearchQuery = '';
+
+function filterByNotes(query) {
+    notesSearchQuery = query.toLowerCase().trim();
+    renderTradesList();
+}
+
+// Patch renderTradesList to respect notes search
+const _origFilter = filterJournal;
 
     </script>
 </body>
