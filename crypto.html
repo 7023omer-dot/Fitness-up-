@@ -758,6 +758,44 @@ html, body {
 .notes-insight.negative { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
 .notes-insight.info { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); color: var(--accent-light); }
 
+
+/* ==================== TRADE STATUS CATEGORIES ==================== */
+.trade-card.limit { border-right: 3px solid var(--purple); }
+.tc-status.limit { background: rgba(168,85,247,0.15); color: var(--purple); }
+.tc-btn.close-trade {
+    flex: 2; color: var(--red); border-color: rgba(239,68,68,0.4);
+    background: rgba(239,68,68,0.08); font-weight: 700;
+}
+.tc-btn.activate {
+    flex: 2; color: var(--green); border-color: rgba(16,185,129,0.4);
+    background: rgba(16,185,129,0.08); font-weight: 700;
+}
+.status-counts {
+    display: flex; gap: 8px; margin-bottom: 12px;
+}
+.status-count-pill {
+    flex: 1; text-align: center; padding: 8px 4px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; cursor: pointer; transition: all 0.2s;
+}
+.status-count-pill.limit-pill { border-color: rgba(168,85,247,0.3); }
+.status-count-pill.open-pill  { border-color: rgba(99,102,241,0.3); }
+.status-count-pill.closed-pill { border-color: rgba(16,185,129,0.3); }
+.scp-num { font-size: 1.2rem; font-weight: 900; }
+.scp-label { font-size: 0.65rem; color: var(--text-secondary); margin-top: 1px; }
+
+/* Quick-close modal inputs */
+.close-result-toggle { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.cr-btn {
+    padding: 10px 6px; border-radius: 10px; font-family: inherit;
+    font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg-elevated);
+    color: var(--text-secondary); transition: all 0.2s; text-align: center;
+}
+.cr-btn.win-active  { background: var(--green-light); border-color: var(--green); color: var(--green); }
+.cr-btn.loss-active { background: var(--red-light);   border-color: var(--red);   color: var(--red); }
+.cr-btn.bep-active  { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
+
     </style>
 </head>
 <body>
@@ -930,12 +968,28 @@ html, body {
                     <!-- Add Trade Button -->
                     <button class="btn-add-trade" onclick="openAddTrade()">+ הוסף עסקה חדשה</button>
 
+                    <!-- Status Count Pills -->
+                    <div class="status-counts" id="status-counts">
+                        <div class="status-count-pill limit-pill" onclick="filterJournal('limit', null)">
+                            <div class="scp-num" id="count-limit" style="color:var(--purple);">0</div>
+                            <div class="scp-label">⏳ לימיט</div>
+                        </div>
+                        <div class="status-count-pill open-pill" onclick="filterJournal('open', null)">
+                            <div class="scp-num" id="count-open" style="color:var(--accent-light);">0</div>
+                            <div class="scp-label">🔄 פעיל</div>
+                        </div>
+                        <div class="status-count-pill closed-pill" onclick="filterJournal('closed', null)">
+                            <div class="scp-num" id="count-closed" style="color:var(--green);">0</div>
+                            <div class="scp-label">✅ סגור</div>
+                        </div>
+                    </div>
+
                     <!-- Filters -->
                     <div class="journal-filters">
                         <button class="filter-btn active" onclick="filterJournal('all', this)">הכל</button>
-                        <button class="filter-btn" onclick="filterJournal('win', this)">רווח ✅</button>
-                        <button class="filter-btn" onclick="filterJournal('loss', this)">הפסד ❌</button>
-                        <button class="filter-btn" onclick="filterJournal('open', this)">פתוח 🔄</button>
+                        <button class="filter-btn" id="filter-limit" onclick="filterJournal('limit', this)">⏳ לימיט</button>
+                        <button class="filter-btn" id="filter-open"  onclick="filterJournal('open',  this)">🔄 פעיל</button>
+                        <button class="filter-btn" id="filter-closed" onclick="filterJournal('closed', this)">✅❌ סגור</button>
                     </div>
 
                     <!-- Notes Search -->
@@ -1484,10 +1538,11 @@ html, body {
                     <div class="form-field half">
                         <label>סטטוס</label>
                         <select id="trade-status">
-                            <option value="open">פתוח</option>
-                            <option value="win">סגור - רווח</option>
-                            <option value="loss">סגור - הפסד</option>
-                            <option value="breakeven">Breakeven</option>
+                            <option value="limit">⏳ לימיט (ממתין)</option>
+                            <option value="open">🔄 פעיל</option>
+                            <option value="win">✅ סגור - רווח</option>
+                            <option value="loss">❌ סגור - הפסד</option>
+                            <option value="breakeven">➖ Breakeven</option>
                         </select>
                     </div>
                 </div>
@@ -1513,6 +1568,45 @@ html, body {
                 </div>
                 <input type="hidden" id="trade-edit-id" value="">
                 <button class="btn-primary" onclick="saveTrade()">שמור עסקה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Close Trade Modal -->
+    <div class="modal-overlay" id="close-trade-modal" onclick="closeCloseTradeModal(event)">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 id="close-trade-modal-title">סגירת עסקה</h2>
+                <button class="modal-close" onclick="closeCloseTradeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-field" style="margin-bottom:14px;">
+                    <label>מחיר יציאה ($)</label>
+                    <input type="number" id="close-exit-price" placeholder="הכנס מחיר יציאה" oninput="autoDetectCloseResult()">
+                </div>
+                <div class="form-field" style="margin-bottom:14px;">
+                    <label>תוצאה</label>
+                    <div class="close-result-toggle">
+                        <button class="cr-btn win-active" id="cr-win"  onclick="setCloseResult('win')">✅ רווח</button>
+                        <button class="cr-btn"            id="cr-loss" onclick="setCloseResult('loss')">❌ הפסד</button>
+                        <button class="cr-btn"            id="cr-bep"  onclick="setCloseResult('breakeven')">➖ BEP</button>
+                    </div>
+                </div>
+                <div class="form-field" style="margin-bottom:14px;">
+                    <label>גודל סגירה</label>
+                    <select id="close-size-type">
+                        <option value="full">סגירה מלאה 100%</option>
+                        <option value="partial75">חלקית 75%</option>
+                        <option value="partial50">חלקית 50%</option>
+                        <option value="partial25">חלקית 25%</option>
+                    </select>
+                </div>
+                <div class="form-field" style="margin-bottom:14px;">
+                    <label>הערות סגירה (אופציונלי)</label>
+                    <textarea id="close-notes" placeholder="מה למדת? למה יצאת?" rows="2"></textarea>
+                </div>
+                <input type="hidden" id="close-trade-id">
+                <button class="btn-primary" onclick="executeCloseTrade()" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🔴 אשר סגירת עסקה</button>
             </div>
         </div>
     </div>
@@ -1748,7 +1842,7 @@ function switchPage(pageName) {
 
 // ==================== DASHBOARD STATS ====================
 function updateDashboardStats() {
-    const closedTrades = trades.filter(t => t.status !== 'open');
+    const closedTrades = trades.filter(t => ['win','loss','breakeven'].includes(t.status));
     const wins = trades.filter(t => t.status === 'win');
     const totalPnl = closedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
     const winRate = closedTrades.length > 0 ? Math.round((wins.length / closedTrades.length) * 100) : 0;
@@ -1785,7 +1879,7 @@ function openAddTrade() {
     document.getElementById('trade-notes').value = '';
     document.getElementById('trade-leverage').value = '1';
     document.getElementById('trade-strategy').value = 'swing';
-    document.getElementById('trade-status').value = 'open';
+    document.getElementById('trade-status').value = 'limit';
     document.getElementById('trade-close-type').value = 'full';
     document.getElementById('custom-pct-field').style.display = 'none';
     updatePctHelpers();
@@ -1928,7 +2022,9 @@ function renderTradesList() {
     const container = document.getElementById('trades-list');
     let filtered = [...trades];
 
-    if (journalFilter !== 'all') {
+    if (journalFilter === 'closed') {
+        filtered = filtered.filter(t => t.status === 'win' || t.status === 'loss' || t.status === 'breakeven');
+    } else if (journalFilter !== 'all') {
         filtered = filtered.filter(t => t.status === journalFilter);
     }
     if (typeof notesSearchQuery !== 'undefined' && notesSearchQuery) {
@@ -1949,8 +2045,19 @@ function renderTradesList() {
         return;
     }
 
+    // Update status count pills
+    const limitCount  = trades.filter(t => t.status === 'limit').length;
+    const openCount   = trades.filter(t => t.status === 'open').length;
+    const closedCount = trades.filter(t => ['win','loss','breakeven'].includes(t.status)).length;
+    const lcEl = document.getElementById('count-limit');
+    const ocEl = document.getElementById('count-open');
+    const ccEl = document.getElementById('count-closed');
+    if (lcEl) lcEl.textContent = limitCount;
+    if (ocEl) ocEl.textContent = openCount;
+    if (ccEl) ccEl.textContent = closedCount;
+
     const strategyLabels = { day: 'יומי ⚡', swing: 'סווינג 📈', investor: 'השקעה 💎' };
-    const statusLabels = { win: '✅ רווח', loss: '❌ הפסד', open: '🔄 פתוח', breakeven: '➖ BEP' };
+    const statusLabels = { win: '✅ רווח', loss: '❌ הפסד', open: '🔄 פעיל', limit: '⏳ לימיט', breakeven: '➖ BEP' };
 
     container.innerHTML = filtered.map(trade => {
         const pnlClass = trade.status === 'open' ? 'neutral' : (trade.pnl > 0 ? 'positive' : trade.pnl < 0 ? 'negative' : 'neutral');
@@ -1989,8 +2096,10 @@ function renderTradesList() {
             </div>
             ${trade.notes ? `<div class="tc-notes">📝 ${trade.notes}</div>` : ''}
             <div class="tc-actions">
-                <button class="tc-btn edit" onclick="editTrade('${trade.id}')">✏️ ערוך</button>
-                <button class="tc-btn delete" onclick="deleteTrade('${trade.id}')">🗑️ מחק</button>
+                \${trade.status === 'limit' ? `<button class="tc-btn activate" onclick="activateLimitTrade('\${trade.id}')">✅ אשר כניסה</button>` : ''}
+                \${trade.status === 'open' ? `<button class="tc-btn close-trade" onclick="openCloseTrade('\${trade.id}')">🔴 סגור עסקה</button>` : ''}
+                <button class="tc-btn edit" onclick="editTrade('\${trade.id}')">✏️ ערוך</button>
+                <button class="tc-btn delete" onclick="deleteTrade('\${trade.id}')">🗑️ מחק</button>
             </div>
         </div>`;
     }).join('');
@@ -2328,7 +2437,7 @@ function renderRiskFeedback(trade) {
 
 // ==================== DETAILED STATS ====================
 function calcDetailedStats() {
-    const closed = trades.filter(t => t.status !== 'open');
+    const closed = trades.filter(t => ['win','loss','breakeven'].includes(t.status));
     const wins   = closed.filter(t => t.status === 'win');
     const losses = closed.filter(t => t.status === 'loss');
     const totalWin  = wins.reduce((s, t) => s + (t.pnl || 0), 0);
@@ -2603,7 +2712,7 @@ function updatePctHelpers() {
 // ==================== PORTFOLIO ROI ====================
 function getPortfolioData() {
     const initial = parseFloat(getData('portfolio_initial', 0)) || 0;
-    const closed = trades.filter(t => t.status !== 'open');
+    const closed = trades.filter(t => ['win','loss','breakeven'].includes(t.status));
     const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
     const current = initial > 0 ? initial + totalPnl : 0;
     const returnPct = initial > 0 ? (totalPnl / initial * 100) : 0;
@@ -2894,6 +3003,100 @@ function filterByNotes(query) {
 
 // Patch renderTradesList to respect notes search
 const _origFilter = filterJournal;
+
+
+// ==================== CLOSE TRADE / ACTIVATE LIMIT ====================
+let _closeResult = 'win';
+
+function openCloseTrade(id) {
+    const trade = trades.find(t => t.id === id);
+    if (!trade) return;
+    document.getElementById('close-trade-id').value = id;
+    document.getElementById('close-trade-modal-title').textContent = 'סגירת ' + trade.pair;
+    document.getElementById('close-exit-price').value = '';
+    document.getElementById('close-notes').value = '';
+    document.getElementById('close-size-type').value = 'full';
+    setCloseResult('win');
+    document.getElementById('close-trade-modal').classList.add('show');
+}
+
+function setCloseResult(result) {
+    _closeResult = result;
+    document.getElementById('cr-win').className  = 'cr-btn' + (result === 'win'       ? ' win-active' : '');
+    document.getElementById('cr-loss').className = 'cr-btn' + (result === 'loss'      ? ' loss-active' : '');
+    document.getElementById('cr-bep').className  = 'cr-btn' + (result === 'breakeven' ? ' bep-active' : '');
+}
+
+function autoDetectCloseResult() {
+    const id = document.getElementById('close-trade-id').value;
+    const trade = trades.find(t => t.id === id);
+    if (!trade || !trade.entry) return;
+    const exit = parseFloat(document.getElementById('close-exit-price').value);
+    if (isNaN(exit)) return;
+    const diff = trade.direction === 'long' ? exit - trade.entry : trade.entry - exit;
+    const pct  = Math.abs(diff / trade.entry);
+    if (pct < 0.001)     setCloseResult('breakeven');
+    else if (diff > 0)   setCloseResult('win');
+    else                 setCloseResult('loss');
+}
+
+function executeCloseTrade() {
+    const id   = document.getElementById('close-trade-id').value;
+    const exit = parseFloat(document.getElementById('close-exit-price').value);
+    const notes = document.getElementById('close-notes').value.trim();
+    const sizeType = document.getElementById('close-size-type').value;
+    const sizePctMap = { full: 100, partial75: 75, partial50: 50, partial25: 25 };
+    const closePct = sizePctMap[sizeType] || 100;
+
+    if (isNaN(exit) || exit <= 0) { showToast('❌ הכנס מחיר יציאה'); return; }
+
+    const trade = trades.find(t => t.id === id);
+    if (!trade) return;
+
+    let pnl = 0;
+    if (trade.entry && trade.size) {
+        const priceChange = trade.direction === 'long'
+            ? (exit - trade.entry) / trade.entry
+            : (trade.entry - exit) / trade.entry;
+        pnl = (trade.size || 0) * priceChange * (trade.leverage || 1) * (closePct / 100);
+    }
+
+    trade.exit      = exit;
+    trade.status    = _closeResult;
+    trade.closePct  = closePct;
+    trade.closeType = sizeType;
+    trade.pnl       = Math.round(pnl * 100) / 100;
+    if (notes) trade.notes = (trade.notes ? trade.notes + '\n📌 סגירה: ' + notes : '📌 סגירה: ' + notes);
+
+    setData('trades', trades);
+    closeCloseTradeModal();
+    renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
+    renderNotesAnalysis();
+    updateDashboardStats();
+
+    const icon = _closeResult === 'win' ? '✅ רווח' : _closeResult === 'loss' ? '❌ הפסד' : '➖ BEP';
+    showToast(`${icon} עסקה נסגרה! ${pnl >= 0 ? '+' : ''}$${Math.abs(pnl).toFixed(0)}`);
+}
+
+function closeCloseTradeModal(event) {
+    if (!event || event.target.id === 'close-trade-modal' || event.target.classList.contains('modal-close')) {
+        document.getElementById('close-trade-modal').classList.remove('show');
+    }
+}
+
+function activateLimitTrade(id) {
+    const trade = trades.find(t => t.id === id);
+    if (!trade) return;
+    trade.status = 'open';
+    setData('trades', trades);
+    renderTradesList();
+    renderDetailedStats();
+    renderAnalytics();
+    updateDashboardStats();
+    showToast('🔄 עסקה הפכה לפעילה!');
+}
 
     </script>
 </body>
