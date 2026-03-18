@@ -796,6 +796,23 @@ html, body {
 .cr-btn.loss-active { background: var(--red-light);   border-color: var(--red);   color: var(--red); }
 .cr-btn.bep-active  { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
 
+
+/* ==================== EXPORT ==================== */
+.export-bar {
+    display: flex; gap: 8px; margin-bottom: 12px;
+}
+.btn-export {
+    flex: 1; padding: 10px 8px; border-radius: 10px;
+    font-family: inherit; font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text-secondary);
+    transition: all 0.2s; text-align: center;
+}
+.btn-export.json { border-color: rgba(99,102,241,0.4); color: var(--accent-light); }
+.btn-export.csv  { border-color: rgba(16,185,129,0.4);  color: var(--green); }
+.btn-export.imp  { border-color: rgba(245,158,11,0.4);  color: var(--yellow); }
+.btn-export:active { transform: scale(0.97); }
+
     </style>
 </head>
 <body>
@@ -967,6 +984,14 @@ html, body {
 
                     <!-- Add Trade Button -->
                     <button class="btn-add-trade" onclick="openAddTrade()">+ הוסף עסקה חדשה</button>
+
+                    <!-- Export / Import -->
+                    <div class="export-bar">
+                        <button class="btn-export json" onclick="exportJSON()">⬇️ ייצא JSON</button>
+                        <button class="btn-export csv"  onclick="exportCSV()">⬇️ ייצא CSV</button>
+                        <button class="btn-export imp"  onclick="document.getElementById('import-file').click()">⬆️ ייבא</button>
+                        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importJSON(event)">
+                    </div>
 
                     <!-- Status Count Pills -->
                     <div class="status-counts" id="status-counts">
@@ -3096,6 +3121,73 @@ function activateLimitTrade(id) {
     renderAnalytics();
     updateDashboardStats();
     showToast('🔄 עסקה הפכה לפעילה!');
+}
+
+
+// ==================== EXPORT / IMPORT ====================
+function exportJSON() {
+    if (trades.length === 0) { showToast('⚠️ אין עסקאות לייצוא'); return; }
+    const data = { version: 1, exported: new Date().toISOString(), trades };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'cryptoedge-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ קובץ JSON הורד!');
+}
+
+function exportCSV() {
+    if (trades.length === 0) { showToast('⚠️ אין עסקאות לייצוא'); return; }
+    const headers = ['תאריך','שעה','זוג','כיוון','כניסה','סטופ','יעד','יציאה','גודל','מינוף','סטטוס','R:R','רווח/הפסד','אסטרטגיה','הערות'];
+    const rows = trades.map(t => [
+        t.date || '', t.time || '', t.pair || '', t.direction || '',
+        t.entry || '', t.stop || '', t.target || '', t.exit || '',
+        t.size || '', t.leverage || 1,
+        t.status || '', t.rr || 0, t.pnl || 0,
+        t.strategy || '',
+        (t.notes || '').replace(/,/g, ';').replace(/
+/g, ' ')
+    ]);
+    const csv = [headers, ...rows].map(r => r.join(',')).join('
+');
+    const bom  = '﻿'; // UTF-8 BOM for Excel Hebrew support
+    const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'cryptoedge-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ קובץ CSV הורד!');
+}
+
+function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            const imported = Array.isArray(data) ? data : (data.trades || []);
+            if (!imported.length) { showToast('⚠️ לא נמצאו עסקאות'); return; }
+            const existing = new Set(trades.map(t => t.id));
+            let added = 0;
+            imported.forEach(t => {
+                if (!existing.has(t.id)) { trades.push(t); added++; }
+            });
+            setData('trades', trades);
+            renderTradesList();
+            renderDetailedStats();
+            renderAnalytics();
+            renderNotesAnalysis();
+            updateDashboardStats();
+            showToast('✅ יובאו ' + added + ' עסקאות!');
+        } catch(e) { showToast('❌ קובץ לא תקין'); }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
 }
 
     </script>
