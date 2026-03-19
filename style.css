@@ -1688,3 +1688,15 @@ input[type="number"] {
 .motivation-static p {
     color: var(--primary-light);
 }
+
+/* בס"ד */
+.bsd-label {
+    position: fixed;
+    top: 6px;
+    left: 12px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    z-index: 999;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
