@@ -2705,31 +2705,154 @@ function showToast(msg) {
 
 
 // ==================== LIVE PRICES ====================
+// Maps trade pair base symbol → CoinGecko ID
+const COIN_GECKO_IDS = {
+    BTC: 'bitcoin', ETH: 'ethereum', SOL: 'solana',
+    SUI: 'sui', ALGO: 'algorand', WIF: 'dog-wif-hat',
+    BNB: 'binancecoin', AVAX: 'avalanche-2', MATIC: 'matic-network',
+    DOGE: 'dogecoin', ADA: 'cardano', DOT: 'polkadot', LINK: 'chainlink',
+    XRP: 'ripple', ATOM: 'cosmos', UNI: 'uniswap', LTC: 'litecoin'
+};
+let livePrices = {}; // symbol → usd price
+
+function getSymbolFromPair(pair) {
+    if (!pair) return null;
+    return pair.split('/')[0].toUpperCase();
+}
+
 async function fetchLivePrices() {
+    // Collect all unique base symbols from open/limit trades + our 5 portfolio coins
+    const neededSymbols = new Set(['BTC', 'ETH', 'SOL', 'SUI', 'ALGO', 'WIF']);
+    trades.forEach(t => {
+        if (t.status === 'limit' || t.status === 'open' || t.status === 'active') {
+            const sym = getSymbolFromPair(t.pair);
+            if (sym) neededSymbols.add(sym);
+        }
+    });
+
+    const ids = [...neededSymbols]
+        .map(s => COIN_GECKO_IDS[s])
+        .filter(Boolean)
+        .join(',');
+
     try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&precision=0');
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&precision=0`);
         const data = await res.json();
         const now = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 
+        // Reverse map: geckoId → symbol
+        const idToSym = {};
+        Object.entries(COIN_GECKO_IDS).forEach(([sym, id]) => { idToSym[id] = sym; });
+
+        // Store all prices
+        Object.entries(data).forEach(([geckoId, info]) => {
+            const sym = idToSym[geckoId];
+            if (sym) livePrices[sym] = info.usd;
+        });
+
+        // Update dashboard BTC/ETH display elements (existing UI)
         if (data.bitcoin) {
             const p = data.bitcoin.usd;
             const ch = data.bitcoin.usd_24h_change || 0;
-            document.getElementById('btc-price').textContent = '$' + Number(p).toLocaleString('en-US');
-            const el = document.getElementById('btc-change');
-            el.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
-            el.className = 'price-change ' + (ch >= 0 ? 'up' : 'down');
-            document.getElementById('btc-updated').textContent = 'עודכן ' + now;
+            const el = document.getElementById('btc-price');
+            if (el) el.textContent = '$' + Number(p).toLocaleString('en-US');
+            const cel = document.getElementById('btc-change');
+            if (cel) { cel.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%'; cel.className = 'price-change ' + (ch >= 0 ? 'up' : 'down'); }
+            const uel = document.getElementById('btc-updated');
+            if (uel) uel.textContent = 'עודכן ' + now;
         }
         if (data.ethereum) {
             const p = data.ethereum.usd;
             const ch = data.ethereum.usd_24h_change || 0;
-            document.getElementById('eth-price').textContent = '$' + Number(p).toLocaleString('en-US');
-            const el = document.getElementById('eth-change');
-            el.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
-            el.className = 'price-change ' + (ch >= 0 ? 'up' : 'down');
-            document.getElementById('eth-updated').textContent = 'עודכן ' + now;
+            const el = document.getElementById('eth-price');
+            if (el) el.textContent = '$' + Number(p).toLocaleString('en-US');
+            const cel = document.getElementById('eth-change');
+            if (cel) { cel.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%'; cel.className = 'price-change ' + (ch >= 0 ? 'up' : 'down'); }
+            const uel = document.getElementById('eth-updated');
+            if (uel) uel.textContent = 'עודכן ' + now;
         }
+
+        // After prices updated — check all triggers
+        checkTradeTriggers();
+
     } catch (e) { /* silent fail */ }
+}
+
+// ==================== AUTO TRADE TRIGGERS ====================
+function checkTradeTriggers() {
+    if (!trades || trades.length === 0) return;
+    let changed = false;
+
+    trades.forEach(trade => {
+        const sym = getSymbolFromPair(trade.pair);
+        const price = sym ? livePrices[sym] : null;
+        if (!price) return;
+
+        const entry  = parseFloat(trade.entry)  || 0;
+        const stop   = parseFloat(trade.stop)   || 0;
+        const target = parseFloat(trade.target) || 0;
+        const isLong = trade.direction === 'long';
+
+        // ── LIMIT → ACTIVE ──────────────────────────────────────────
+        if (trade.status === 'limit' && entry > 0) {
+            const triggered = isLong
+                ? price <= entry   // long limit: price dropped to entry
+                : price >= entry;  // short limit: price rose to entry
+            if (triggered) {
+                trade.status = 'open';
+                trade.activatedAt = new Date().toISOString();
+                changed = true;
+                showToast(`⚡ ${trade.pair} — הלימיט הופעל! עסקה פעילה`);
+            }
+        }
+
+        // ── OPEN → WIN (Take Profit) ─────────────────────────────────
+        else if ((trade.status === 'open' || trade.status === 'active') && target > 0) {
+            const tpHit = isLong
+                ? price >= target  // long: price rose to target
+                : price <= target; // short: price fell to target
+
+            if (tpHit) {
+                trade.status = 'win';
+                trade.exit = target;
+                trade.closedAt = new Date().toISOString();
+                // Recalculate P&L
+                if (entry && trade.size) {
+                    const pct = isLong ? (target - entry) / entry : (entry - target) / entry;
+                    trade.pnl = Math.round(trade.size * pct * (trade.leverage || 1) * 100) / 100;
+                }
+                changed = true;
+                showToast(`✅ ${trade.pair} — Take Profit הושג! עסקה נסגרה ברווח`);
+            }
+
+            // ── OPEN → LOSS (Stop Loss) ───────────────────────────────
+            else if (stop > 0) {
+                const slHit = isLong
+                    ? price <= stop   // long: price dropped to stop
+                    : price >= stop;  // short: price rose to stop
+
+                if (slHit) {
+                    trade.status = 'loss';
+                    trade.exit = stop;
+                    trade.closedAt = new Date().toISOString();
+                    if (entry && trade.size) {
+                        const pct = isLong ? (stop - entry) / entry : (entry - stop) / entry;
+                        trade.pnl = Math.round(trade.size * pct * (trade.leverage || 1) * 100) / 100;
+                    }
+                    changed = true;
+                    showToast(`❌ ${trade.pair} — Stop Loss הגיע. עסקה נסגרה`);
+                }
+            }
+        }
+    });
+
+    if (changed) {
+        setData('trades', trades);
+        renderTradesList();
+        renderDetailedStats();
+        renderAnalytics();
+        updateDashboardStats();
+    }
 }
 
 // ==================== CRYPTO NEWS ====================
