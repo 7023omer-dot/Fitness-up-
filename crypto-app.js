@@ -39,6 +39,7 @@ function initApp() {
     updateDashboardStats();
     setDefaultDate();
     calculateRisk();
+    checkMonthlyReportReminder();
 }
 
 // ==================== FEAR & GREED INDEX ====================
@@ -190,7 +191,8 @@ function switchPage(pageName) {
         strategies: 'אסטרטגיות',
         risk: 'ניהול סיכונים',
         whales: 'מעקב לווייתנים',
-        charts: 'גרפים היסטוריים'
+        charts: 'גרפים היסטוריים',
+        portfolio: 'תיק השקעות'
     };
     document.getElementById('page-title').textContent = titles[pageName] || 'CryptoEdge';
 }
@@ -203,7 +205,14 @@ function updateDashboardStats() {
     const winRate = closedTrades.length > 0 ? Math.round((wins.length / closedTrades.length) * 100) : 0;
 
     document.getElementById('total-trades-val').textContent = trades.length;
-    document.getElementById('win-rate-val').textContent = winRate + '%';
+    const wrEl = document.getElementById('win-rate-val');
+    wrEl.textContent = winRate + '%';
+    wrEl.style.color = winRate >= 55 ? 'var(--green)' : winRate >= 45 ? 'var(--yellow)' : 'var(--red)';
+
+    const wrCard = document.getElementById('stat-win-rate');
+    if (wrCard) {
+        wrCard.className = 'stat-card ' + (winRate >= 55 ? 'wr-good' : winRate >= 45 ? 'wr-warn' : 'wr-bad');
+    }
 
     const pnlEl = document.getElementById('total-pnl-val');
     pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + '$' + Math.abs(totalPnl).toFixed(0);
@@ -539,8 +548,10 @@ const PROFILES = {
 
 function showProfile(type) {
     document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-    const activeIdx = { day: 0, swing: 1, investor: 2 }[type];
+    const activeIdx = { day: 0, swing: 1, investor: 2, mine: 3 }[type];
     document.querySelectorAll('.profile-tab')[activeIdx]?.classList.add('active');
+
+    if (type === 'mine') { renderMyStrategy(); return; }
 
     const profile = PROFILES[type];
     const container = document.getElementById('profile-content');
@@ -618,6 +629,165 @@ function calculateRisk() {
     } else {
         rrEl.style.color = 'var(--red)';
     }
+}
+
+// ==================== MY PERSONAL STRATEGY ====================
+const MY_STRATEGY = {
+    trading: [
+        { icon: '⚖️', text: 'יחס סיכון/סיכוי קבוע לפחות 1:3 — לא להיכנס לעסקה עם R:R נמוך יותר.' },
+        { icon: '🕐', text: 'תזמון כניסה לפי הטיימפריים הנכון — עסקה יומית: RSI בשעתי/4 שעתי. סווינג: 4 שעתי/12 שעתי.' },
+        { icon: '📊', text: 'לחפש קיצון RSI הפוך בדומיננס הדולר (DXY) — לאשר כיוון לפני כניסה לונג או שורט.' },
+        { icon: '🌊', text: 'לזהות מגמה רחבה ומיקום בסייקל — שוק דובי: תודעת שורטים + לונגים רק בOversold. שורי: ההפך.' },
+        { icon: '🧠', text: 'אם כועס, עצבני, שמח, עצוב — לא לסחור. רגש ומסחר לא עובדים יחד.' },
+        { icon: '📈', text: 'לאסוף כמה שיותר נתונים על עצמי, לנהל יומן מסחר ולשמור על Win Rate 50%+.' },
+        { icon: '⏳', text: 'להשתדל לא להיכנס במרקט — תמיד בלימיט. לחפש טריגר לפני כל עסקה.' },
+        { icon: '😤', text: 'לא להיות בFOMO — להתנהל לפי תהליך ובקור רוח.' },
+        { icon: '🛡️', text: 'לקדם סטופ לקנייה תמיד אחרי שנכנסת לרווח שווה ערך לסיכון. אם סיכנת 2% ואתה ב+2% — קדם סטופ.' },
+        { icon: '🎯', text: 'לא לצאת לפני Take Profit. אם זיהית היפוך — קח 50% לכיס ושים סטופ בקנייה. לא לפספס רווחים.' }
+    ],
+    investing: [
+        { icon: '₿', text: 'המטרה העיקרית: לצבור כמה שיותר ביטקוין.' },
+        { icon: '⚡', text: 'להיות אקטיבי — לא לפחד לעשות קנייה ומכירה. לא להיות אדיש.' },
+        { icon: '💎', text: 'להחזיק מקסימום 4 אלטקוינות + ביטקוין = 5 מטבעות בסך הכל. לסחור רק עליהם.' },
+        { icon: '🔬', text: 'כל מטבע שמחזיק חייב לעבור מחקר מעמיק: מייסד, מרקט קאפ, ציפיות, תוכניות עתידיות.' },
+        { icon: '🏆', text: 'לזכור שאנחנו שחקנים לטווח הרחוק — לא לחפש להקדים את המוקדם ולא לאחר את המוקדם.' }
+    ]
+};
+
+function renderMyStrategy() {
+    const container = document.getElementById('profile-content');
+    let html = `<div class="profile-section">
+        <div class="profile-header">
+            <div class="profile-header-icon">🎯</div>
+            <h2>האסטרטגיה שלי</h2>
+            <p>כללי המסחר וההשקעות האישיים — הקוד שלי לשוק</p>
+            <div class="timeframe">עדכון: מרץ 2026</div>
+        </div>`;
+
+    html += `<div class="strategy-block"><div class="strategy-block-title">📈 מסחר — הכללים שלי</div>`;
+    MY_STRATEGY.trading.forEach((rule, i) => {
+        html += `<div class="ms-row">
+            <span class="ms-num">${i + 1}</span>
+            <div class="ms-text">${rule.icon} ${rule.text}</div>
+        </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div class="strategy-block"><div class="strategy-block-title">💼 השקעות — הכללים שלי</div>`;
+    MY_STRATEGY.investing.forEach((rule, i) => {
+        html += `<div class="ms-row">
+            <span class="ms-num">${i + 1}</span>
+            <div class="ms-text">${rule.icon} ${rule.text}</div>
+        </div>`;
+    });
+    html += `</div></div>`;
+
+    container.innerHTML = html;
+}
+
+// ==================== COIN TOGGLE (PORTFOLIO) ====================
+function toggleCoin(id) {
+    const details = document.getElementById('details-' + id);
+    const arrow = document.getElementById('arrow-' + id);
+    if (!details) return;
+    const isOpen = details.classList.contains('open');
+    details.classList.toggle('open', !isOpen);
+    if (arrow) arrow.classList.toggle('open', !isOpen);
+}
+
+// ==================== MONTHLY REPORT ====================
+function getMonthlyStats(year, month) {
+    const closed = trades.filter(t => {
+        if (!t.date || (t.status !== 'win' && t.status !== 'loss' && t.status !== 'breakeven' && t.status !== 'closed')) return false;
+        const d = new Date(t.date);
+        return d.getFullYear() === year && d.getMonth() === month;
+    });
+    const wins = closed.filter(t => t.status === 'win');
+    const losses = closed.filter(t => t.status === 'loss');
+    const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate = closed.length > 0 ? Math.round(wins.length / closed.length * 100) : 0;
+    const bestTrade = closed.reduce((best, t) => (!best || (t.pnl || 0) > (best.pnl || 0)) ? t : best, null);
+    const worstTrade = closed.reduce((worst, t) => (!worst || (t.pnl || 0) < (worst.pnl || 0)) ? t : worst, null);
+    return { closed, wins, losses, totalPnl, winRate, bestTrade, worstTrade };
+}
+
+function buildReportText(year, month) {
+    const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    const s = getMonthlyStats(year, month);
+    const monthLabel = `${monthNames[month]} ${year}`;
+    const pnlSign = s.totalPnl >= 0 ? '+' : '';
+
+    let text = `📊 דוח מסחר חודשי — CryptoEdge\n`;
+    text += `📅 חודש: ${monthLabel}\n`;
+    text += `${'─'.repeat(32)}\n\n`;
+    text += `📈 סיכום ביצועים:\n`;
+    text += `• עסקאות סגורות: ${s.closed.length}\n`;
+    text += `• ניצחונות: ${s.wins.length} ✅\n`;
+    text += `• הפסדים: ${s.losses.length} ❌\n`;
+    text += `• Win Rate: ${s.winRate}%\n`;
+    text += `• רווח/הפסד כולל: ${pnlSign}$${Math.abs(s.totalPnl).toFixed(0)}\n\n`;
+
+    if (s.bestTrade) {
+        text += `🏆 עסקה מנצחת הכי טובה:\n`;
+        text += `  ${s.bestTrade.pair} | ${s.bestTrade.date} | +$${(s.bestTrade.pnl || 0).toFixed(0)}\n\n`;
+    }
+    if (s.worstTrade && s.worstTrade !== s.bestTrade) {
+        text += `💔 עסקה גרועה ביותר:\n`;
+        text += `  ${s.worstTrade.pair} | ${s.worstTrade.date} | $${(s.worstTrade.pnl || 0).toFixed(0)}\n\n`;
+    }
+
+    if (s.closed.length > 0) {
+        text += `📋 כל העסקאות:\n`;
+        s.closed.forEach(t => {
+            const st = t.status === 'win' ? '✅' : t.status === 'loss' ? '❌' : '➖';
+            const pnl = (t.pnl || 0) >= 0 ? `+$${Math.abs(t.pnl || 0).toFixed(0)}` : `-$${Math.abs(t.pnl || 0).toFixed(0)}`;
+            text += `  ${st} ${t.pair} | ${t.date} | ${pnl}\n`;
+        });
+    }
+
+    text += `\n${'─'.repeat(32)}\n`;
+    text += `CryptoEdge — פלטפורמת המסחר שלך`;
+    return text;
+}
+
+function openMonthlyReport(year, month) {
+    const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    const text = buildReportText(year, month);
+    window._rptText = text;
+    window._rptMonth = `${monthNames[month]} ${year}`;
+    document.getElementById('monthly-report-title').textContent = `דוח ${monthNames[month]} ${year}`;
+    document.getElementById('monthly-report-body').textContent = text;
+    document.getElementById('monthly-report-modal').classList.add('show');
+}
+
+function closeMonthlyModal(event) {
+    if (!event || event.target.id === 'monthly-report-modal' || event.target.classList.contains('modal-close')) {
+        document.getElementById('monthly-report-modal').classList.remove('show');
+    }
+}
+
+function emailReport() {
+    const subj = encodeURIComponent(`דוח מסחר חודשי CryptoEdge — ${window._rptMonth || ''}`);
+    const body = encodeURIComponent(window._rptText || '');
+    window.location.href = `mailto:?subject=${subj}&body=${body}`;
+}
+
+function checkMonthlyReportReminder() {
+    const now = new Date();
+    if (now.getDate() !== 1) return;
+    const key = `report_shown_${now.getFullYear()}_${now.getMonth()}`;
+    if (getData(key, false)) return;
+    setData(key, true);
+
+    // Show report for previous month
+    let repMonth = now.getMonth() - 1;
+    let repYear = now.getFullYear();
+    if (repMonth < 0) { repMonth = 11; repYear--; }
+
+    const s = getMonthlyStats(repYear, repMonth);
+    if (s.closed.length === 0) return;
+
+    setTimeout(() => openMonthlyReport(repYear, repMonth), 2800);
 }
 
 // ==================== UTILS ====================

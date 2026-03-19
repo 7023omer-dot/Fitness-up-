@@ -813,6 +813,90 @@ html, body {
 .btn-export.imp  { border-color: rgba(245,158,11,0.4);  color: var(--yellow); }
 .btn-export:active { transform: scale(0.97); }
 
+/* ==================== COIN CARDS (PORTFOLIO) ==================== */
+.coin-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; margin-bottom: 12px; overflow: hidden;
+    transition: border-color 0.2s; cursor: pointer;
+}
+.coin-card:active { transform: scale(0.99); }
+.coin-header {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+}
+.coin-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800; flex-shrink: 0;
+}
+.coin-info { flex: 1; }
+.coin-name { font-size: 1rem; font-weight: 800; }
+.coin-ticker {
+    font-size: 0.75rem; background: rgba(99,102,241,0.15);
+    color: var(--accent-light); padding: 2px 7px; border-radius: 6px;
+    font-weight: 700; margin-right: 6px;
+}
+.coin-tagline { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+.coin-arrow { color: var(--text-muted); font-size: 0.75rem; transition: transform 0.25s; }
+.coin-arrow.open { transform: rotate(180deg); }
+
+.coin-details {
+    display: none; padding: 0 16px 16px; border-top: 1px solid var(--border);
+}
+.coin-details.open { display: block; }
+.coin-section-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--accent-light); margin-top: 14px; margin-bottom: 5px;
+}
+.coin-section-val {
+    font-size: 0.83rem; color: var(--text); line-height: 1.55;
+}
+.expectation-row {
+    padding: 4px 0; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.expectation-row:last-child { border-bottom: none; }
+.coin-stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-top: 6px;
+}
+.coin-stat {
+    background: var(--bg-elevated); border-radius: 10px; padding: 8px 4px; text-align: center;
+}
+.cs-val { font-size: 0.8rem; font-weight: 800; color: var(--text); }
+.cs-lbl { font-size: 0.6rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* ==================== MONTHLY REPORT MODAL ==================== */
+.monthly-report-body { font-size: 0.85rem; white-space: pre-wrap; line-height: 1.7;
+    max-height: 55vh; overflow-y: auto; background: var(--bg-elevated);
+    border-radius: 12px; padding: 14px; color: var(--text); }
+.report-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-report {
+    flex: 1; padding: 14px; border-radius: 12px; border: none; font-family: inherit;
+    font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+}
+.btn-report.primary { background: linear-gradient(135deg,var(--accent),var(--purple)); color:#fff; }
+.btn-report.secondary { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-secondary); }
+.btn-report:active { opacity: 0.8; }
+
+/* ==================== MY STRATEGY ==================== */
+.my-strategy-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+}
+.ms-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    color: #fff; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; margin-left: 10px;
+}
+.ms-row { display: flex; align-items: flex-start; gap: 0; margin-bottom: 10px; }
+.ms-text { flex: 1; font-size: 0.85rem; line-height: 1.55; color: var(--text); }
+.ms-section { font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--accent-light); text-transform: uppercase; margin: 18px 0 10px; }
+
+/* ==================== WIN RATE HIGHLIGHT ==================== */
+.stat-card.wr-good { border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.05); }
+.stat-card.wr-warn { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.05); }
+.stat-card.wr-bad  { border-color: rgba(239,68,68,0.5);  background: rgba(239,68,68,0.05); }
+
     </style>
 </head>
 <body>
@@ -1062,6 +1146,10 @@ html, body {
                             <div class="pt-icon">💎</div>
                             <div class="pt-label">משקיע</div>
                         </button>
+                        <button class="profile-tab" onclick="showProfile('mine')">
+                            <div class="pt-icon">🎯</div>
+                            <div class="pt-label">שלי</div>
+                        </button>
                     </div>
 
                     <!-- Profile Content -->
@@ -1283,10 +1371,212 @@ html, body {
             </section>
 
             <!-- ==================== CHARTS ==================== -->
-            <section id="page-charts" class="page">
+            <section id="page-portfolio" class="page">
                 <div class="page-scroll">
 
-                    <div class="section-title">גרפים היסטוריים</div>
+                    <div class="section-title">תיק השקעות</div>
+                    <p class="section-subtitle">5 המטבעות שלי — דאטה מקיף על כל נכס</p>
+
+                    <!-- Coins -->
+                    <div id="coins-list">
+                        <!-- Bitcoin -->
+                        <div class="coin-card" onclick="toggleCoin('btc')">
+                            <div class="coin-header">
+                                <div class="coin-icon" style="background:var(--yellow-light);color:var(--yellow);">₿</div>
+                                <div class="coin-info">
+                                    <div class="coin-name">Bitcoin <span class="coin-ticker">BTC</span></div>
+                                    <div class="coin-tagline">זהב דיגיטלי — Reserve Asset עולמי</div>
+                                </div>
+                                <div class="coin-arrow" id="arrow-btc">▼</div>
+                            </div>
+                            <div class="coin-details" id="details-btc">
+                                <div class="coin-section-label">👤 מייסד</div>
+                                <div class="coin-section-val">Satoshi Nakamoto (אנונימי) — יצר את ביטקוין ב-2009 ונעלם ב-2011</div>
+
+                                <div class="coin-section-label">🎯 תחום התמחות</div>
+                                <div class="coin-section-val">מטבע דיגיטלי מבוזר — Store of Value, Digital Gold, Peer-to-Peer Payment. שכבת הבסיס של כלכלת הקריפטו כולה. אספקה מוגבלת ל-21 מיליון בלבד.</div>
+
+                                <div class="coin-section-label">💰 מרקט קאפ (2025)</div>
+                                <div class="coin-section-val">~$1.5–2 טריליון. הנכס הקריפטוגרפי הגדול ביותר בעולם — כ-50–55% דומיננטיות שוק.</div>
+
+                                <div class="coin-section-label">📅 ציפיות 2025–2027</div>
+                                <div class="coin-section-val">
+                                    <div class="expectation-row">✅ אלווינג אפריל 2024 — מחזור שורי אמור להסתיים 2025-2026</div>
+                                    <div class="expectation-row">✅ ETF ביטקוין ספוט אושר בארה"ב — זרימת מוסדיים גדולה</div>
+                                    <div class="expectation-row">✅ יעדי מחיר: $150K–$250K בשיא הסייקל</div>
+                                    <div class="expectation-row">✅ אימוץ מוסדי ממשיך — MicroStrategy, BlackRock, Fidelity</div>
+                                    <div class="expectation-row">⚠️ Bear market צפוי 2026-2027 אחרי שיא</div>
+                                </div>
+
+                                <div class="coin-section-label">📊 מדדים מרכזיים</div>
+                                <div class="coin-stats-grid">
+                                    <div class="coin-stat"><div class="cs-val">21M</div><div class="cs-lbl">אספקה מקסימלית</div></div>
+                                    <div class="coin-stat"><div class="cs-val">2009</div><div class="cs-lbl">שנת הקמה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">PoW</div><div class="cs-lbl">מנגנון</div></div>
+                                    <div class="coin-stat"><div class="cs-val">#1</div><div class="cs-lbl">דירוג שוק</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solana -->
+                        <div class="coin-card" onclick="toggleCoin('sol')">
+                            <div class="coin-header">
+                                <div class="coin-icon" style="background:rgba(153,69,255,0.15);color:#9945ff;">◎</div>
+                                <div class="coin-info">
+                                    <div class="coin-name">Solana <span class="coin-ticker">SOL</span></div>
+                                    <div class="coin-tagline">שכבת L1 מהירה — "Ethereum Killer"</div>
+                                </div>
+                                <div class="coin-arrow" id="arrow-sol">▼</div>
+                            </div>
+                            <div class="coin-details" id="details-sol">
+                                <div class="coin-section-label">👤 מייסדים</div>
+                                <div class="coin-section-val">Anatoly Yakovenko (מהנדס לשעבר ב-Qualcomm) ו-Raj Gokal — הקימו את Solana Labs ב-2017, השיק 2020.</div>
+
+                                <div class="coin-section-label">🎯 תחום התמחות</div>
+                                <div class="coin-section-val">בלוקצ'יין L1 במהירות גבוהה — 50,000-65,000 TPS, עמלות נמוכות (&lt;$0.01). מוביל ב-DeFi, NFT, Memecoin. Proof of History (PoH) + Proof of Stake. אקוסיסטם ענק עם Phantom Wallet, Serum, Raydium.</div>
+
+                                <div class="coin-section-label">💰 מרקט קאפ (2025)</div>
+                                <div class="coin-section-val">~$60–100 מיליארד. אחת האלטקוינות הגדולות בעולם — #2-5 לרוב.</div>
+
+                                <div class="coin-section-label">📅 ציפיות 2025–2027</div>
+                                <div class="coin-section-val">
+                                    <div class="expectation-row">✅ ETF Solana Spot — בקשות הוגשו לSEC, סיכוי גבוה לאישור 2025</div>
+                                    <div class="expectation-row">✅ מובילה ב-Memecoin Volume — WIF, Bonk, POPCAT</div>
+                                    <div class="expectation-row">✅ Firedancer upgrade — שדרוג מהירות ל-1M+ TPS</div>
+                                    <div class="expectation-row">✅ יעדי מחיר: $300–$600 בשיא הסייקל</div>
+                                    <div class="expectation-row">⚠️ תחרות עם Base, Sui, Aptos</div>
+                                </div>
+
+                                <div class="coin-section-label">📊 מדדים מרכזיים</div>
+                                <div class="coin-stats-grid">
+                                    <div class="coin-stat"><div class="cs-val">589M</div><div class="cs-lbl">אספקה (SOL)</div></div>
+                                    <div class="coin-stat"><div class="cs-val">2020</div><div class="cs-lbl">שנת השקה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">PoH+PoS</div><div class="cs-lbl">מנגנון</div></div>
+                                    <div class="coin-stat"><div class="cs-val">#4</div><div class="cs-lbl">דירוג שוק</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUI -->
+                        <div class="coin-card" onclick="toggleCoin('sui')">
+                            <div class="coin-header">
+                                <div class="coin-icon" style="background:rgba(100,221,213,0.15);color:#64ddd5;">⬡</div>
+                                <div class="coin-info">
+                                    <div class="coin-name">Sui <span class="coin-ticker">SUI</span></div>
+                                    <div class="coin-tagline">L1 חדש — Move Language, Gaming & Web3</div>
+                                </div>
+                                <div class="coin-arrow" id="arrow-sui">▼</div>
+                            </div>
+                            <div class="coin-details" id="details-sui">
+                                <div class="coin-section-label">👤 מייסדים</div>
+                                <div class="coin-section-val">Evan Cheng, Sam Blackshear, Adeniyi Abiodun, George Danezis, Kostas Chalkias — לשעבר צוות Meta/Diem (ניסיון Libra). Mysten Labs הוקמה 2021.</div>
+
+                                <div class="coin-section-label">🎯 תחום התמחות</div>
+                                <div class="coin-section-val">בלוקצ'יין L1 מבוסס Move Language (שפה בטוחה יותר מ-Solidity). מודל Object-Centric ייחודי. מוביל ב-Gaming, NFT, DeFi. עיבוד מקבילי — תנועות בלתי תלויות מעובדות בו-זמנית. מהירות גבוהה מאוד.</div>
+
+                                <div class="coin-section-label">💰 מרקט קאפ (2025)</div>
+                                <div class="coin-section-val">~$5–15 מיליארד. נכס צעיר עם פוטנציאל צמיחה גבוה.</div>
+
+                                <div class="coin-section-label">📅 ציפיות 2025–2027</div>
+                                <div class="coin-section-val">
+                                    <div class="expectation-row">✅ צמיחת אקוסיסטם Gaming — Mysten Labs משקיעה ב-Web3 games</div>
+                                    <div class="expectation-row">✅ אינטגרציות DeFi — SuiSwap, Cetus Protocol</div>
+                                    <div class="expectation-row">✅ יעדי מחיר: $8–$20 בשיא (x3-x10 מהנמוך)</div>
+                                    <div class="expectation-row">✅ שותפויות עם חברות gaming גדולות</div>
+                                    <div class="expectation-row">⚠️ עדיין בשלב בנייה — סיכון גבוה יחסית</div>
+                                </div>
+
+                                <div class="coin-section-label">📊 מדדים מרכזיים</div>
+                                <div class="coin-stats-grid">
+                                    <div class="coin-stat"><div class="cs-val">10B</div><div class="cs-lbl">אספקה מקסימלית</div></div>
+                                    <div class="coin-stat"><div class="cs-val">2023</div><div class="cs-lbl">שנת השקה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">DPoS</div><div class="cs-lbl">מנגנון</div></div>
+                                    <div class="coin-stat"><div class="cs-val">#20</div><div class="cs-lbl">דירוג שוק</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Algorand -->
+                        <div class="coin-card" onclick="toggleCoin('algo')">
+                            <div class="coin-header">
+                                <div class="coin-icon" style="background:rgba(16,185,129,0.15);color:var(--green);">Ⓐ</div>
+                                <div class="coin-info">
+                                    <div class="coin-name">Algorand <span class="coin-ticker">ALGO</span></div>
+                                    <div class="coin-tagline">Pure PoS — CBDC & Institutional Blockchain</div>
+                                </div>
+                                <div class="coin-arrow" id="arrow-algo">▼</div>
+                            </div>
+                            <div class="coin-details" id="details-algo">
+                                <div class="coin-section-label">👤 מייסד</div>
+                                <div class="coin-section-val">Silvio Micali — פרופסור MIT, זוכה פרס טיורינג (הנובל של מדעי המחשב) ב-2012. יצר את Algorand ב-2017, השיק 2019. מומחה עולמי בקריפטוגרפיה.</div>
+
+                                <div class="coin-section-label">🎯 תחום התמחות</div>
+                                <div class="coin-section-val">Pure Proof of Stake — מהסביבתי ביותר בקריפטו (פחות חשמל מ-Bitcoin ב-99.999%). מוביל ב-CBDC (מטבעות דיגיטליים של מדינות) — שיתוף פעולה עם ממשלת מרשל איילנד, אירופה. DeFi, NFT, Smart Contracts. פיינאליטי מידית.</div>
+
+                                <div class="coin-section-label">💰 מרקט קאפ (2025)</div>
+                                <div class="coin-section-val">~$1.5–4 מיליארד. נחשב לנכס מוזל יחסית לטכנולוגיה שלו.</div>
+
+                                <div class="coin-section-label">📅 ציפיות 2025–2027</div>
+                                <div class="coin-section-val">
+                                    <div class="expectation-row">✅ שותפויות CBDC — הבנק העולמי, ממשלות</div>
+                                    <div class="expectation-row">✅ Algorand Foundation ממשיכה לבנות אקוסיסטם</div>
+                                    <div class="expectation-row">✅ יעדי מחיר: $0.5–$2 (upside גבוה מרמות נמוכות)</div>
+                                    <div class="expectation-row">✅ הכי מתאים לאימוץ מוסדי/ממשלתי</div>
+                                    <div class="expectation-row">⚠️ נתפס כ"boring" — חסר hype ספקולטיבי</div>
+                                </div>
+
+                                <div class="coin-section-label">📊 מדדים מרכזיים</div>
+                                <div class="coin-stats-grid">
+                                    <div class="coin-stat"><div class="cs-val">10B</div><div class="cs-lbl">אספקה מקסימלית</div></div>
+                                    <div class="coin-stat"><div class="cs-val">2019</div><div class="cs-lbl">שנת השקה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">PPoS</div><div class="cs-lbl">מנגנון</div></div>
+                                    <div class="coin-stat"><div class="cs-val">#50</div><div class="cs-lbl">דירוג שוק</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WIF -->
+                        <div class="coin-card" onclick="toggleCoin('wif')">
+                            <div class="coin-header">
+                                <div class="coin-icon" style="background:rgba(249,115,22,0.15);color:var(--orange);">🐕</div>
+                                <div class="coin-info">
+                                    <div class="coin-name">dogwifhat <span class="coin-ticker">WIF</span></div>
+                                    <div class="coin-tagline">Meme Coin על Solana — High Risk/Reward</div>
+                                </div>
+                                <div class="coin-arrow" id="arrow-wif">▼</div>
+                            </div>
+                            <div class="coin-details" id="details-wif">
+                                <div class="coin-section-label">👤 מייסד</div>
+                                <div class="coin-section-val">אנונימי — הושק דצמבר 2023 על Solana. נכס ממים טהור ללא צוות רשמי. הקהילה מניעה את הנכס.</div>
+
+                                <div class="coin-section-label">🎯 תחום התמחות</div>
+                                <div class="coin-section-val">Meme Coin על רשת Solana — אין "use case" טכנולוגי מהותי. הכוח שלו הוא: תרבות אינטרנט + קהילה חזקה + Solana ecosystem. אחד הממים הגדולים בהיסטוריה — הגיע ל-TOP 10 בשיא.</div>
+
+                                <div class="coin-section-label">💰 מרקט קאפ (2025)</div>
+                                <div class="coin-section-val">~$1–4 מיליארד. תנודתיות קיצונית — יכול לרדת 90% בירידות ולעלות 1000% בעליות.</div>
+
+                                <div class="coin-section-label">📅 ציפיות 2025–2027</div>
+                                <div class="coin-section-val">
+                                    <div class="expectation-row">✅ קורלציה גבוהה לSolana — כשSOL עולה, WIF עולה יותר</div>
+                                    <div class="expectation-row">✅ Bull market — Meme coins מתפוצצים בשיאי הסייקל</div>
+                                    <div class="expectation-row">✅ יעדי מחיר ספקולטיביים: $5–$15+ בשיא (Bull case)</div>
+                                    <div class="expectation-row">⚠️ ACHTUNG: סיכון קיצוני — ללא fundamentals</div>
+                                    <div class="expectation-row">⚠️ בשוק דובי — ירידה 80-95% אפשרית</div>
+                                </div>
+
+                                <div class="coin-section-label">📊 מדדים מרכזיים</div>
+                                <div class="coin-stats-grid">
+                                    <div class="coin-stat"><div class="cs-val">998M</div><div class="cs-lbl">אספקה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">2023</div><div class="cs-lbl">שנת השקה</div></div>
+                                    <div class="coin-stat"><div class="cs-val">PoH+PoS</div><div class="cs-lbl">רשת (Solana)</div></div>
+                                    <div class="coin-stat"><div class="cs-val">Meme</div><div class="cs-lbl">קטגוריה</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Historical Charts (kept as links) -->
+                    <div class="section-title" style="margin-top:20px;">גרפים וכלים היסטוריים</div>
                     <p class="section-subtitle">כלים לזיהוי מיקום בסייקל</p>
 
                     <!-- Super Cycle Info Card -->
@@ -1466,9 +1756,9 @@ html, body {
                 <span class="nav-icon">🐋</span>
                 <span class="nav-label">לווייתנים</span>
             </button>
-            <button class="nav-item" data-page="charts" onclick="switchPage('charts')">
-                <span class="nav-icon">📈</span>
-                <span class="nav-label">גרפים</span>
+            <button class="nav-item" data-page="portfolio" onclick="switchPage('portfolio')">
+                <span class="nav-icon">💼</span>
+                <span class="nav-label">תיק</span>
             </button>
         </nav>
 
@@ -1860,7 +2150,8 @@ function switchPage(pageName) {
         strategies: 'אסטרטגיות',
         risk: 'ניהול סיכונים',
         whales: 'מעקב לווייתנים',
-        charts: 'גרפים היסטוריים'
+        charts: 'גרפים היסטוריים',
+        portfolio: 'תיק השקעות'
     };
     document.getElementById('page-title').textContent = titles[pageName] || 'CryptoEdge';
 }
@@ -1873,7 +2164,13 @@ function updateDashboardStats() {
     const winRate = closedTrades.length > 0 ? Math.round((wins.length / closedTrades.length) * 100) : 0;
 
     document.getElementById('total-trades-val').textContent = trades.length;
-    document.getElementById('win-rate-val').textContent = winRate + '%';
+    const wrEl = document.getElementById('win-rate-val');
+    wrEl.textContent = winRate + '%';
+    wrEl.style.color = winRate >= 55 ? 'var(--green)' : winRate >= 45 ? 'var(--yellow)' : 'var(--red)';
+    const wrCard = document.getElementById('stat-win-rate');
+    if (wrCard) {
+        wrCard.className = 'stat-card ' + (winRate >= 55 ? 'wr-good' : winRate >= 45 ? 'wr-warn' : 'wr-bad');
+    }
 
     const pnlEl = document.getElementById('total-pnl-val');
     pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + '$' + Math.abs(totalPnl).toFixed(0);
@@ -2261,10 +2558,64 @@ const PROFILES = {
     }
 };
 
+const MY_STRATEGY = {
+    trading: [
+        { icon: '⚖️', text: 'יחס סיכון/סיכוי קבוע לפחות 1:3 — לא להיכנס לעסקה עם R:R נמוך יותר.' },
+        { icon: '🕐', text: 'תזמון כניסה לפי הטיימפריים הנכון — עסקה יומית: RSI בשעתי/4 שעתי. סווינג: 4 שעתי/12 שעתי.' },
+        { icon: '📊', text: 'לחפש קיצון RSI הפוך בדומיננס הדולר (DXY) — לאשר כיוון לפני כניסה לונג או שורט.' },
+        { icon: '🌊', text: 'לזהות מגמה רחבה ומיקום בסייקל — שוק דובי: תודעת שורטים + לונגים רק בOversold. שורי: ההפך.' },
+        { icon: '🧠', text: 'אם כועס, עצבני, שמח, עצוב — לא לסחור. רגש ומסחר לא עובדים יחד.' },
+        { icon: '📈', text: 'לאסוף כמה שיותר נתונים על עצמי, לנהל יומן מסחר ולשמור על Win Rate 50%+.' },
+        { icon: '⏳', text: 'להשתדל לא להיכנס במרקט — תמיד בלימיט. לחפש טריגר לפני כל עסקה.' },
+        { icon: '😤', text: 'לא להיות בFOMO — להתנהל לפי תהליך ובקור רוח.' },
+        { icon: '🛡️', text: 'לקדם סטופ לקנייה תמיד אחרי שנכנסת לרווח שווה ערך לסיכון. אם סיכנת 2% ואתה ב+2% — קדם סטופ.' },
+        { icon: '🎯', text: 'לא לצאת לפני Take Profit. אם זיהית היפוך — קח 50% לכיס ושים סטופ בקנייה. לא לפספס רווחים.' }
+    ],
+    investing: [
+        { icon: '₿', text: 'המטרה העיקרית: לצבור כמה שיותר ביטקוין.' },
+        { icon: '⚡', text: 'להיות אקטיבי — לא לפחד לעשות קנייה ומכירה. לא להיות אדיש.' },
+        { icon: '💎', text: 'להחזיק מקסימום 4 אלטקוינות + ביטקוין = 5 מטבעות בסך הכל. לסחור רק עליהם.' },
+        { icon: '🔬', text: 'כל מטבע שמחזיק חייב לעבור מחקר מעמיק: מייסד, מרקט קאפ, ציפיות, תוכניות עתידיות.' },
+        { icon: '🏆', text: 'לזכור שאנחנו שחקנים לטווח הרחוק — לא לחפש להקדים את המוקדם ולא לאחר את המוקדם.' }
+    ]
+};
+
+function renderMyStrategy() {
+    const container = document.getElementById('profile-content');
+    let html = `<div class="profile-section">
+        <div class="profile-header">
+            <div class="profile-header-icon">🎯</div>
+            <h2>האסטרטגיה שלי</h2>
+            <p>כללי המסחר וההשקעות האישיים — הקוד שלי לשוק</p>
+            <div class="timeframe">עדכון: מרץ 2026</div>
+        </div>`;
+    html += `<div class="strategy-block"><div class="strategy-block-title">📈 מסחר — הכללים שלי</div>`;
+    MY_STRATEGY.trading.forEach((rule, i) => {
+        html += `<div class="ms-row"><span class="ms-num">${i + 1}</span><div class="ms-text">${rule.icon} ${rule.text}</div></div>`;
+    });
+    html += `</div><div class="strategy-block"><div class="strategy-block-title">💼 השקעות — הכללים שלי</div>`;
+    MY_STRATEGY.investing.forEach((rule, i) => {
+        html += `<div class="ms-row"><span class="ms-num">${i + 1}</span><div class="ms-text">${rule.icon} ${rule.text}</div></div>`;
+    });
+    html += `</div></div>`;
+    container.innerHTML = html;
+}
+
+function toggleCoin(id) {
+    const details = document.getElementById('details-' + id);
+    const arrow = document.getElementById('arrow-' + id);
+    if (!details) return;
+    const isOpen = details.classList.contains('open');
+    details.classList.toggle('open', !isOpen);
+    if (arrow) arrow.classList.toggle('open', !isOpen);
+}
+
 function showProfile(type) {
     document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-    const activeIdx = { day: 0, swing: 1, investor: 2 }[type];
+    const activeIdx = { day: 0, swing: 1, investor: 2, mine: 3 }[type];
     document.querySelectorAll('.profile-tab')[activeIdx]?.classList.add('active');
+
+    if (type === 'mine') { renderMyStrategy(); return; }
 
     const profile = PROFILES[type];
     const container = document.getElementById('profile-content');
