@@ -728,6 +728,32 @@ html, body {
 }
 .ot-day-dot.ot { background: var(--red-light); color: var(--red); }
 
+/* ==================== EQUITY CURVE ==================== */
+.equity-curve-card {
+    background: var(--bg-card); border: 1px solid var(--border-glow);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+}
+.equity-curve-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.equity-curve-title { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+.equity-curve-badge { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 8px; }
+.equity-curve-badge.up { background: var(--green-light); color: var(--green); }
+.equity-curve-badge.down { background: var(--red-light); color: var(--red); }
+.equity-curve-badge.flat { background: var(--bg-elevated); color: var(--text-secondary); }
+#equity-curve-canvas { width: 100%; display: block; border-radius: 8px; }
+.equity-no-data { text-align: center; padding: 24px 0; font-size: 0.8rem; color: var(--text-muted); }
+
+/* ==================== STRATEGY STATS ==================== */
+.strategy-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.strat-card {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 8px; text-align: center;
+}
+.strat-card.has-data { border-color: rgba(99,102,241,0.3); }
+.strat-icon { font-size: 1.3rem; margin-bottom: 4px; }
+.strat-name { font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+.strat-wr { font-size: 1.15rem; font-weight: 800; }
+.strat-pnl { font-size: 0.72rem; font-weight: 700; margin-top: 3px; }
+.strat-count { font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; }
 
 /* ==================== NOTES ANALYSIS ==================== */
 .notes-analysis-card {
@@ -3327,14 +3353,55 @@ function renderAnalytics() {
             ${otData.maxDay > 3 ? `<div style="margin-top:8px;font-size:0.75rem;color:var(--yellow);">⚠️ מקסימום 3 עסקאות ביום לניהול סיכונים מיטבי</div>` : ''}
         </div>`;
 
+    // Equity curve
+    const closedSorted = trades.filter(t => ['win','loss','breakeven'].includes(t.status) && t.date);
+    const finalPnl = closedSorted.reduce((s, t) => s + (t.pnl || 0), 0);
+    const eqBadgeCls = finalPnl > 0 ? 'up' : finalPnl < 0 ? 'down' : 'flat';
+    const eqBadgeTxt = (finalPnl >= 0 ? '+' : '') + '$' + finalPnl.toFixed(0);
+    const equityHtml = `
+        <div class="section-title" style="margin-top:14px;">עקומת הון עצמי</div>
+        <div class="equity-curve-card">
+            <div class="equity-curve-header">
+                <span class="equity-curve-title">📈 צמיחת התיק לאורך זמן</span>
+                <span class="equity-curve-badge ${eqBadgeCls}">${eqBadgeTxt}</span>
+            </div>
+            ${closedSorted.length >= 2
+                ? `<canvas id="equity-curve-canvas" style="width:100%;height:160px;"></canvas>`
+                : `<div class="equity-no-data">צריך לפחות 2 עסקאות סגורות לציור הגרף</div>`
+            }
+        </div>`;
+
+    // Strategy breakdown
+    const stratData = calcStrategyStats();
+    const stratHtml = `
+        <div class="section-title">ביצועים לפי אסטרטגיה</div>
+        <div class="strategy-stats-grid">
+            ${stratData.map(s => {
+                const wrColor = s.winRate === null ? 'var(--text-muted)' : s.winRate >= 55 ? 'var(--green)' : s.winRate >= 45 ? 'var(--yellow)' : 'var(--red)';
+                const pnlColor = s.totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+                return `<div class="strat-card ${s.closed > 0 ? 'has-data' : ''}">
+                    <div class="strat-icon">${s.icon}</div>
+                    <div class="strat-name">${s.label}</div>
+                    <div class="strat-wr" style="color:${wrColor}">${s.winRate !== null ? s.winRate+'%' : '--'}</div>
+                    <div class="strat-pnl" style="color:${pnlColor}">${s.closed > 0 ? (s.totalPnl>=0?'+':'')+' $'+Math.abs(s.totalPnl).toFixed(0) : '--'}</div>
+                    <div class="strat-count">${s.count} עסקאות</div>
+                </div>`;
+            }).join('')}
+        </div>`;
+
     section.innerHTML = `
         <div class="analytics-section">
             <div class="section-title" style="margin-top:4px;">📊 ניתוח ביצועים</div>
             ${portHtml}
+            ${equityHtml}
+            ${stratHtml}
             ${dayHtml}
             ${timeHtml}
             ${otHtml}
         </div>`;
+
+    // Draw equity curve after DOM update
+    if (closedSorted.length >= 2) requestAnimationFrame(drawEquityCurve);
 }
 
 function calcDayOfWeekStats() {
@@ -3386,6 +3453,119 @@ function calcOvertradingStats() {
     return { maxDay, topDays: entries.slice(0, 5) };
 }
 
+
+// ==================== STRATEGY STATS ====================
+function calcStrategyStats() {
+    const defs = [
+        { key: 'day',      label: 'יומי',    icon: '⚡' },
+        { key: 'swing',    label: 'סווינג',  icon: '📈' },
+        { key: 'investor', label: 'השקעה',   icon: '💎' }
+    ];
+    return defs.map(d => {
+        const st     = trades.filter(t => (t.strategy || 'swing') === d.key);
+        const closed = st.filter(t => ['win','loss','breakeven'].includes(t.status));
+        const wins   = closed.filter(t => t.status === 'win');
+        const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
+        return {
+            ...d,
+            count:    st.length,
+            closed:   closed.length,
+            wins:     wins.length,
+            winRate:  closed.length > 0 ? Math.round(wins.length / closed.length * 100) : null,
+            totalPnl,
+            avgPnl:   closed.length > 0 ? totalPnl / closed.length : 0
+        };
+    });
+}
+
+// ==================== EQUITY CURVE ====================
+function drawEquityCurve() {
+    const canvas = document.getElementById('equity-curve-canvas');
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.offsetWidth || 320;
+    const H = 160;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const closed = trades
+        .filter(t => ['win','loss','breakeven'].includes(t.status) && t.date)
+        .sort((a, b) => new Date(a.date + (a.time ? 'T'+a.time : '')) - new Date(b.date + (b.time ? 'T'+b.time : '')));
+
+    if (closed.length < 2) {
+        ctx.fillStyle = 'rgba(120,120,160,0.5)';
+        ctx.font = '13px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('צריך לפחות 2 עסקאות סגורות', W / 2, H / 2);
+        return;
+    }
+
+    let cum = 0;
+    const points = [0, ...closed.map(t => { cum += (t.pnl || 0); return cum; })];
+
+    const pad = { top: 18, bottom: 28, left: 8, right: 8 };
+    const minV = Math.min(...points);
+    const maxV = Math.max(...points);
+    const range = maxV - minV || 1;
+    const toX = i => pad.left + i * (W - pad.left - pad.right) / (points.length - 1);
+    const toY = v => H - pad.bottom - ((v - minV) / range) * (H - pad.top - pad.bottom);
+
+    const finalPnl = points[points.length - 1];
+    const isUp = finalPnl >= 0;
+    const lineColor = isUp ? '#10b981' : '#ef4444';
+
+    // Zero line
+    const zeroY = toY(0);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, zeroY); ctx.lineTo(W - pad.right, zeroY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Fill
+    const grad = ctx.createLinearGradient(0, pad.top, 0, H - pad.bottom);
+    grad.addColorStop(0, isUp ? 'rgba(16,185,129,0.28)' : 'rgba(239,68,68,0.28)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(points[0]));
+    points.forEach((v, i) => ctx.lineTo(toX(i), toY(v)));
+    ctx.lineTo(toX(points.length - 1), H - pad.bottom);
+    ctx.lineTo(toX(0), H - pad.bottom);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(points[0]));
+    points.forEach((v, i) => ctx.lineTo(toX(i), toY(v)));
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Dots on first and last
+    [[0, points[0]], [points.length - 1, points[points.length - 1]]].forEach(([i, v]) => {
+        ctx.beginPath();
+        ctx.arc(toX(i), toY(v), 4, 0, Math.PI * 2);
+        ctx.fillStyle = lineColor;
+        ctx.fill();
+    });
+
+    // Labels: trade count at bottom
+    ctx.fillStyle = 'rgba(120,120,160,0.7)';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const step = Math.ceil(points.length / 6);
+    for (let i = 0; i < points.length; i += step) {
+        ctx.fillText(i === 0 ? 'התחלה' : '#' + i, toX(i), H - pad.bottom + 4);
+    }
+}
 
 // ==================== NOTES ANALYSIS ====================
 const STOP_WORDS_HE = new Set(['את','של','על','עם','אל','לא','כי','זה','הוא','היא','הם','הן','אני','אתה','אנחנו','יש','אין','גם','רק','כבר','אחרי','לפני','כן','לו','לה','בו','בה','כל','מה','שם','בין','עד','מי','אם','או','כך','כן','ב','ל','מ','ו','ה','ש','כ']);
