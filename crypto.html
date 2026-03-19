@@ -6,6 +6,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#060610">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
     <title>CryptoEdge - פלטפורמת מסחר</title>
     <style>
 /* ==================== CRYPTOEDGE - STYLES ==================== */
@@ -978,8 +980,11 @@ html, body {
             <div class="header-right">
                 <h1 id="page-title">דשבורד</h1>
             </div>
-            <div class="header-left">
+            <div class="header-left" style="display:flex;align-items:center;gap:8px;">
                 <div class="header-badge" id="fng-header-badge">--</div>
+                <button id="pwa-install-btn" onclick="installPWA()" style="display:none;align-items:center;gap:6px;background:var(--accent);border:none;color:#fff;padding:6px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">
+                    ⬇️ התקן אפליקציה
+                </button>
             </div>
         </header>
 
@@ -2022,6 +2027,34 @@ html, body {
     <div class="toast" id="toast"></div>
 
     <script>
+// ==================== PWA SERVICE WORKER ====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+// ==================== PWA INSTALL PROMPT ====================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('pwa-install-btn').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-install-btn').style.display = 'none';
+  deferredPrompt = null;
+});
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('pwa-install-btn').style.display = 'none';
+    });
+  }
+}
+
 // ==================== CRYPTOEDGE - APP.JS ====================
 // Professional Crypto Trading Platform - Hebrew RTL
 
