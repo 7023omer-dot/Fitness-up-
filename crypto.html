@@ -102,6 +102,37 @@ html, body {
 .header-badge.greed { background: rgba(132, 204, 22, 0.15); border-color: #84cc16; color: #84cc16; }
 .header-badge.extreme-greed { background: var(--green-light); border-color: var(--green); color: var(--green); }
 
+/* ==================== MOTIVATION CARD ==================== */
+.motivation-card {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 16px; padding: 16px 16px 14px;
+    margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.motivation-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at top right, rgba(139,92,246,0.15), transparent 60%);
+    pointer-events: none;
+}
+.motivation-bsd {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 0.68rem; color: rgba(139,92,246,0.8);
+    font-weight: 700; letter-spacing: 1px;
+}
+.motivation-quotes { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.motivation-quote {
+    display: flex; align-items: flex-start; gap: 10px;
+}
+.mq-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+.mq-text {
+    font-size: 0.82rem; line-height: 1.55; color: var(--text);
+    font-weight: 500; direction: rtl;
+}
+.mq-text strong { color: var(--accent-light); }
+.motivation-divider {
+    height: 1px; background: rgba(99,102,241,0.2); margin: 0 4px;
+}
+
 /* ==================== PAGES ==================== */
 .pages-container { flex: 1; overflow: hidden; position: relative; }
 .page { position: absolute; inset: 0; bottom: var(--nav-height); display: none; }
@@ -958,6 +989,24 @@ html, body {
             <!-- ==================== DASHBOARD ==================== -->
             <section id="page-dashboard" class="page active">
                 <div class="page-scroll">
+
+                    <!-- Motivation Card -->
+                    <div class="motivation-card">
+                        <span class="motivation-bsd">בס״ד</span>
+                        <div class="motivation-quotes">
+                            <div class="motivation-quote">
+                                <span class="mq-icon">✡️</span>
+                                <div class="mq-text">
+                                    <strong>וְזָכַרְתָּ אֶת ה׳ אֱלוֹקֶיךָ</strong> — כִּי הוּא הַנּוֹתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל
+                                </div>
+                            </div>
+                            <div class="motivation-divider"></div>
+                            <div class="motivation-quote">
+                                <span class="mq-icon">⚖️</span>
+                                <div class="mq-text">לא להקדים את המאוחר — ולא לאחר את המוקדם</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Fear & Greed Index -->
                     <div class="fng-card" id="fng-card">
