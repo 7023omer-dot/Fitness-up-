@@ -1072,6 +1072,10 @@ html, body {
                     </div>
 
 
+                    <!-- Daily P&L -->
+                    <div class="section-title">📅 רווח/הפסד יומי</div>
+                    <div id="dashboard-daily-pnl"></div>
+
                     <!-- Live Prices -->
                     <div class="section-title">מחירים בזמן אמת <span class="live-dot"></span></div>
                     <div class="live-prices-grid">
@@ -1187,6 +1191,7 @@ html, body {
                     <!-- Journal Stats -->
                     <div id="journal-stats-section"></div>
                     <div id="advanced-stats-section"></div>
+                    <div id="journal-daily-pnl"></div>
 
                     <!-- Analytics -->
                     <div id="journal-analytics-section"></div>
@@ -2395,6 +2400,7 @@ function updateDashboardStats() {
 
     const pnlCard = document.getElementById('stat-pnl');
     pnlCard.style.borderColor = totalPnl >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)';
+    renderDailyPnl('dashboard-daily-pnl');
 }
 
 // ==================== TRADING JOURNAL ====================
@@ -2652,6 +2658,63 @@ function renderTradesList() {
             </div>
         </div>`;
     }).join('');
+}
+
+// ==================== DAILY P&L ====================
+function renderDailyPnl(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+
+    const closed = trades.filter(t => ['win','loss','breakeven'].includes(t.status) && t.date);
+    if (closed.length === 0) { el.innerHTML = ''; return; }
+
+    // Build daily map
+    const dayMap = {};
+    closed.forEach(t => {
+        if (!dayMap[t.date]) dayMap[t.date] = { pnl: 0, count: 0, wins: 0, losses: 0 };
+        dayMap[t.date].pnl   += (t.pnl || 0);
+        dayMap[t.date].count++;
+        if (t.status === 'win')  dayMap[t.date].wins++;
+        if (t.status === 'loss') dayMap[t.date].losses++;
+    });
+
+    // Last 30 days
+    const days = Object.entries(dayMap)
+        .sort((a,b) => a[0] > b[0] ? -1 : 1)
+        .slice(0, 30)
+        .reverse();
+
+    const maxAbs = Math.max(...days.map(d => Math.abs(d[1].pnl)), 1);
+
+    const rows = days.map(([date, d]) => {
+        const pnl = d.pnl;
+        const isPos = pnl >= 0;
+        const barPct = Math.round(Math.abs(pnl) / maxAbs * 100);
+        const pnlStr = (isPos ? '+$' : '-$') + Math.abs(pnl).toFixed(0);
+        const dateShort = date.slice(5); // MM-DD
+        const barColor = isPos ? 'var(--green)' : 'var(--red)';
+        return `
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+            <div style="width:42px;font-size:0.72rem;color:var(--text-muted);flex-shrink:0;">${dateShort}</div>
+            <div style="flex:1;height:18px;background:var(--bg-elevated);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:${barPct}%;background:${barColor};border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+            <div style="width:60px;text-align:left;font-size:0.78rem;font-weight:700;color:${barColor};">${pnlStr}</div>
+            <div style="width:48px;text-align:left;font-size:0.68rem;color:var(--text-muted);">${d.wins}✅ ${d.losses}❌</div>
+        </div>`;
+    }).join('');
+
+    const total = days.reduce((s,[,d])=>s+d.pnl, 0);
+    const totalColor = total >= 0 ? 'var(--green)' : 'var(--red)';
+
+    el.innerHTML = `
+    <div style="background:var(--bg-card);border-radius:16px;border:1px solid var(--border);padding:14px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.8rem;color:var(--text-muted);">30 הימים האחרונים</span>
+            <span style="font-size:0.85rem;font-weight:700;color:${totalColor};">${total>=0?'+$':'-$'}${Math.abs(total).toFixed(0)}</span>
+        </div>
+        ${rows}
+    </div>`;
 }
 
 // ==================== HISTORY ====================
@@ -3304,6 +3367,7 @@ function renderDetailedStats() {
 
     // Advanced Statistics
     renderAdvancedStats();
+    renderDailyPnl('journal-daily-pnl');
 }
 
 // ==================== ADVANCED STATISTICS ====================
