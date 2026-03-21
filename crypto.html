@@ -2372,12 +2372,17 @@ function saveTrade() {
     }
 
     const editId = document.getElementById('trade-edit-id').value;
+    const finalAmount = (!isNaN(size) && !isNaN(exit) && exit > 0)
+        ? Math.round((size * (closePct / 100) + pnl) * 100) / 100
+        : null;
+
     const trade = {
         id: editId || Date.now().toString(),
         pair, direction: tradeDirection, entry, stop, target, exit: isNaN(exit) ? null : exit,
         size: isNaN(size) ? null : size, leverage, status, notes, date, time: tradeTime, strategy,
         closePct, closeType,
-        pnl: Math.round(pnl * 100) / 100, rr: Math.round(rr * 100) / 100
+        pnl: Math.round(pnl * 100) / 100, rr: Math.round(rr * 100) / 100,
+        finalAmount
     };
 
     if (editId) {
@@ -2522,7 +2527,10 @@ function renderTradesList() {
                     <div class="tc-meta">${trade.date || ''} | ${strategyLabels[trade.strategy] || ''} | R:R ${trade.rr || 0}:1</div>
                     ${trade.size ? `<div class="tc-meta">גודל: $${trade.size.toLocaleString()}${trade.closePct && trade.closePct < 100 ? ` | <span class="tc-close-type">סגור ${trade.closePct}%</span>` : ''}</div>` : ''}
                 </div>
-                <div class="tc-pnl-val ${pnlClass}">${pnlText}</div>
+                <div style="text-align:left;">
+                    <div class="tc-pnl-val ${pnlClass}">${pnlText}</div>
+                    ${['win','loss','breakeven'].includes(trade.status) && trade.finalAmount != null ? `<div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">סגירה: $${trade.finalAmount.toLocaleString()}</div>` : ''}
+                </div>
             </div>
             ${trade.notes ? `<div class="tc-notes">📝 ${trade.notes}</div>` : ''}
             <div class="tc-actions">
@@ -3822,11 +3830,14 @@ function executeCloseTrade() {
         pnl = (trade.size || 0) * priceChange * (trade.leverage || 1) * (closePct / 100);
     }
 
-    trade.exit      = exit;
-    trade.status    = _closeResult;
-    trade.closePct  = closePct;
-    trade.closeType = sizeType;
-    trade.pnl       = Math.round(pnl * 100) / 100;
+    trade.exit       = exit;
+    trade.status     = _closeResult;
+    trade.closePct   = closePct;
+    trade.closeType  = sizeType;
+    trade.pnl        = Math.round(pnl * 100) / 100;
+    trade.finalAmount = trade.size
+        ? Math.round((trade.size * (closePct / 100) + pnl) * 100) / 100
+        : null;
     if (notes) trade.notes = (trade.notes ? trade.notes + '\n📌 סגירה: ' + notes : '📌 סגירה: ' + notes);
 
     setData('trades', trades);
